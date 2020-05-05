@@ -1,0 +1,15 @@
+{
+ "app": {
+   "title": "Bright Mirror par bluenove",
+   "read_existing": "Lire une histoire",
+   "footer": "Bright Mirror par bluenove"
+ },
+ "editor": {
+   "your_name": "Votre pseudonyme",
+   "story_title": "Le titre de votre histoire",
+   "story_body": "Votre récit"
+ },
+ "reader": {
+   "text_by": "Une histoire de"
+ }
+}

@@ -147,7 +147,7 @@ class BrightMirror extends Component {
 		};
 	}
 
-	componentDidMount = () => {
+	componentDidMount() {
 		// get list of bright mirror stories
 		fetch(this.readPostEndpoint,
 			{
@@ -168,8 +168,6 @@ class BrightMirror extends Component {
 					});
 				}
 			);
-
-
 	}
 
 	render() {
@@ -410,7 +408,7 @@ class ImageCropperUploader extends Component {
 		this.fileReader.readAsDataURL(file);
 	}
 
-	componentDidMount = () => {
+	componentDidMount() {
 		this.consumeContent(this.state.initialImage);
 	}
 

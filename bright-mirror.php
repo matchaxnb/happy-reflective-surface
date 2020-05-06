@@ -93,11 +93,13 @@ function handle_read_bm_post($data) {
     $bmPost = $bmPost[0];
     $bm = get_post($bmPost);
     $author_nickname = get_post_meta($bmPost, 'author_nickname', true);
+    $post_thumbnail = get_the_post_thumbnail_url($bmPost, array(400, 400));
     return [
         'id' => $bm->post_id,
         'title' => $bm->post_title,
         'body' => $bm->post_content,
         'author' => $author_nickname,
+        'image' => $post_thumbnail,
     ];
 }
 

@@ -1,13 +1,13 @@
-import './style';
-require('medium-editor/dist/css/medium-editor.css');
-require('cropperjs/dist/cropper.css');
-require('medium-editor/dist/css/themes/default.css');
-import DOMPurify from 'dompurify';
-import definition from './i18n/fr-fr.json';
-import MediumEditor from 'medium-editor';
+import './style'
+require('medium-editor/dist/css/medium-editor.css')
+require('cropperjs/dist/cropper.css')
+require('medium-editor/dist/css/themes/default.css')
+import DOMPurify from 'dompurify'
+import definition from './i18n/fr-fr.json'
+import MediumEditor from 'medium-editor'
 import Cropper from 'cropperjs'
-import { Component, createRef } from 'preact';
-import { IntlProvider, Text, MarkupText, Localizer } from 'preact-i18n';
+import { Component, createRef } from 'preact'
+import { IntlProvider, Text, MarkupText, Localizer } from 'preact-i18n'
 
 export default class IntlApp extends Component {
     render() {
@@ -23,8 +23,8 @@ export default class IntlApp extends Component {
 class BrightMirror extends Component {
     constructor(props) {
         super(props)
-        this.new_post_endpoint = 'http://localhost:8001/wp-json/brightmirror/v1/stories'
-        this.read_post_endpoint = 'http://localhost:8001/wp-json/brightmirror/v1/stories/'
+        this.newPostEndpoint = 'http://localhost:8001/wp-json/brightmirror/v1/stories'
+        this.readPostEndpoint = 'http://localhost:8001/wp-json/brightmirror/v1/stories/'
         this.state = {
             story: {
                 author: "",
@@ -41,13 +41,15 @@ class BrightMirror extends Component {
             brightMirrorToReadId: 0,
             brightMirrorList: [
                 {id: "0", title: "-"}
-            ]
-        };
+            ],
+            errorStatus: null,
+            appStatus: null,
+        }
     }
 
     componentDidMount = () => {
         // get list of bright mirror stories
-        fetch(this.read_post_endpoint,
+        fetch(this.readPostEndpoint,
             {
                 method: 'GET',
             })
@@ -56,11 +58,11 @@ class BrightMirror extends Component {
                 (result) => {
                     this.setState({
                         brightMirrorList: result
-                    });
+                    })
                 },
                 (error) => {
-                    console.log("NOK!");
-                    console.log(error);
+                    console.log("NOK!")
+                    console.log(error)
                 }
             )
 
@@ -84,23 +86,24 @@ class BrightMirror extends Component {
     changeQueriedBrightMirrorHandler = (e) => {
         this.setState({
             brightMirrorToReadId: e.target.value
-        });
-        fetch(this.read_post_endpoint + e.target.value,
+        })
+        fetch(this.readPostEndpoint + e.target.value,
             {
                 method: 'GET',
             })
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log("OK!");
-                    console.log(result);
+                    console.log("OK!")
+                    console.log(result)
                     this.setState({
                         brightMirrorToRead: result
-                    });
+                    })
                 },
                 (error) => {
-                    console.log("NOK!");
-                    console.log(result);
+                    console.log("NOK!")
+                    console.log(result)
+                    this.setState({errorStatus: result})
                 }
             )
     }
@@ -110,9 +113,9 @@ class BrightMirror extends Component {
     }
 
     saveToServer = (asDraft) => {
-        const json_body = JSON.stringify(this.state.story)
-        console.log("sending", json_body)
-        let endpoint = this.new_post_endpoint
+        const jsonBody = JSON.stringify(this.state.story)
+        console.log("sending", jsonBody)
+        let endpoint = this.newPostEndpoint
         if (asDraft == true) {
             endpoint += '?as_draft=true'
         }
@@ -122,17 +125,18 @@ class BrightMirror extends Component {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: json_body,
+                body: jsonBody,
             })
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log("OK!");
-                    console.log(result);
+                    console.log("OK!")
+                    console.log(result)
                 },
                 (error) => {
-                    console.log("NOK!");
-                    console.log(result);
+                    console.log("NOK!")
+                    console.log(result)
+                    this.setState({errorStatus: result})
                 }
             )
     }
@@ -171,12 +175,13 @@ class BrightMirror extends Component {
                 />
                 <BrightMirrorViewer story={this.state.story} />
                 <h3><Text id="app.read_existing">Read an existing bright mirror</Text></h3>
-                <img src={this.state.image_url} />
                 <input type="text" onChange={this.changeQueriedBrightMirrorHandler} value={this.state.brightMirrorToReadId} />
                 <BrightMirrorListSelect options={this.state.brightMirrorList} value={this.state.brightMirrorToReadId} onChange={this.changeQueriedBrightMirrorHandler} />
                 <BrightMirrorViewer story={this.state.brightMirrorToRead} />
+                <div class='status'>{this.state.appStatus}</div>
+                <div class='error'>{this.state.errorStatus}</div>
 			</div>
-		);
+		)
 	}
 }
 
@@ -199,7 +204,7 @@ class BrightMirrorEditor extends Component {
                     <input className="bmEditorYourName" name="author" type="text" value={this.props.story.author} placeholder={<Text id="editor.your_name">Your name</Text>} onChange={this.props.inputHandler} />
                 </Localizer>
             </label>
-            <ImageCropperUploader croppedContentHandler={this.props.croppedContentHandler} />
+            <ImageCropperUploader initialImage={this.props.story.image} croppedContentHandler={this.props.croppedContentHandler} />
             <div className="bmEditorButtonGroup">
             <Localizer>
                 <input type="submit" onClick={this.props.submitHandler} value={<Text id="editor.submit_story">Submit your story</Text>}/>
@@ -214,7 +219,7 @@ class BrightMirrorEditor extends Component {
             </div>
 
         </form>
-        );
+        )
     }
 }
 
@@ -227,8 +232,12 @@ class CopyToClipboard extends Component {
         console.log(this.ref.current)
         document.execCommand('copy')
         this.ref.current.setAttribute('disabled', 'disabled')
-        if (window.getSelection) {window.getSelection().removeAllRanges();}
-        else if (document.selection) {document.selection.empty();}
+        if (window.getSelection) {
+            window.getSelection().removeAllRanges()
+        }
+        else if (document.selection) {
+            document.selection.empty()
+        }
     }
     render() {
         return (
@@ -241,7 +250,7 @@ class CopyToClipboard extends Component {
 class BrightMirrorViewer extends Component {
     readingTime = (text) => {
         text = text || ""
-        return Math.ceil(text.split(/\s/g).length / 200);
+        return Math.ceil(text.split(/\s/g).length / 200)
     }
     render() {
         const sane = DOMPurify.sanitize(this.props.story.body)
@@ -254,7 +263,7 @@ class BrightMirrorViewer extends Component {
             <p><Text id="reader.reading_time" plural={rt} fields={{duration: rt}} />Reading time: {rt}</p>
             <div dangerouslySetInnerHTML={{ __html: sane }} />
           </article>
-               );
+               )
     }
 }
 
@@ -288,7 +297,7 @@ class BrightMirrorListSelect extends Component {
         })}
 
         </select>
-    );
+    )
   }
 }
 
@@ -314,7 +323,7 @@ class RichTextEditor extends Component {
       <div className="RichTextEditor">
         <div ref={this.ref} className="richtexteditor" />
       </div>
-    );
+    )
   }
 }
 
@@ -328,25 +337,31 @@ class ImageCropperUploader extends Component {
         hasImage: false
     }
 
-    handleFileRead = (e) => {
-        const content = this.fileReader.result
+    consumeContent = (content) => {
         const ref = this.imgRef
         var context = this.imgRef.current.getContext("2d")
         var that = this
         var img = new Image()
-        img.onload = function() {
+        img.onload = () => {
             context.canvas.height = img.height
             context.canvas.width = img.width
             context.drawImage(img, 0, 0)
-            that.cropper = new Cropper(ref.current,
-            {
-                    aspectRatio: 1/1,
-            }
+            that.cropper = new Cropper(
+                ref.current,
+                {
+                        aspectRatio: 1/1,
+                }
             )
         }
         img.src = content
         this.setState({hasImage: true})
+
     }
+    handleFileRead = (e) => {
+        const content = this.fileReader.result
+        return this.consumeContent(content)
+    }
+
     crop = (e) => {
         e.preventDefault()
         e.target.disabled="disabled"
@@ -375,11 +390,17 @@ class ImageCropperUploader extends Component {
     }
 
     handleFileChosen = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0]
         this.file = file
         this.fileReader = new FileReader()
         this.fileReader.onloadend = this.handleFileRead
         this.fileReader.readAsDataURL(file)
+    }
+
+    componentDidMount = () => {
+        console.log('cdm')
+        this.consumeContent(this.state.initialImage)
+        console.log('cdm2')
     }
 
     render() {

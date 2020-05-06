@@ -171,6 +171,7 @@ class BrightMirror extends Component {
                 />
                 <BrightMirrorViewer story={this.state.story} />
                 <h3><Text id="app.read_existing">Read an existing bright mirror</Text></h3>
+                <img src={this.state.image_url} />
                 <input type="text" onChange={this.changeQueriedBrightMirrorHandler} value={this.state.brightMirrorToReadId} />
                 <BrightMirrorListSelect options={this.state.brightMirrorList} value={this.state.brightMirrorToReadId} onChange={this.changeQueriedBrightMirrorHandler} />
                 <BrightMirrorViewer story={this.state.brightMirrorToRead} />
@@ -238,12 +239,9 @@ class CopyToClipboard extends Component {
 }
 
 class BrightMirrorViewer extends Component {
-    ref = createRef()
     readingTime = (text) => {
         text = text || ""
         return Math.ceil(text.split(/\s/g).length / 200);
-        // average reading time is 200 wpm
-//        return Math.floor(Math.max(1, this.ref.current.wordCount() / 200));
     }
     render() {
         const sane = DOMPurify.sanitize(this.props.story.body)
@@ -251,6 +249,7 @@ class BrightMirrorViewer extends Component {
         return (
           <article>
             <h1>{this.props.story.title}</h1>
+            { this.props.story.image ? <img src={this.props.story.image} /> : null}
             <p><Text id="reader.text_by">by</Text> {this.props.story.author}</p>
             <p><Text id="reader.reading_time" plural={rt} fields={{duration: rt}} />Reading time: {rt}</p>
             <div dangerouslySetInnerHTML={{ __html: sane }} />

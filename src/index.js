@@ -346,13 +346,12 @@ class ImageCropperUploader extends Component {
 	consumeContent = (content) => {
 		const ref = this.imgRef;
 		let context = this.imgRef.current.getContext('2d');
-		let that = this;
 		let img = new Image();
 		img.onload = () => {
 			context.canvas.height = img.height;
 			context.canvas.width = img.width;
 			context.drawImage(img, 0, 0);
-			that.cropper = new Cropper(
+			this.cropper = new Cropper(
 				ref.current,
 				{
 					aspectRatio: 1 / 1

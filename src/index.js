@@ -23,8 +23,8 @@ export default class IntlApp extends Component {
     return (
       <IntlProvider definition={definition}>
         <BrightMirror
-	newPostEndpoint={LBM_NEW_POST_ENDPOINT}
-	readPostEndpoint={LBM_READ_POST_ENDPOINT}
+          newPostEndpoint={LBM_NEW_POST_ENDPOINT}
+          readPostEndpoint={LBM_READ_POST_ENDPOINT}
         />
       </IntlProvider>
     );
@@ -35,7 +35,7 @@ export default class IntlApp extends Component {
 
 class BrightMirror extends Component {
 
-	editorInputChangeHandler = (e) => {
+  editorInputChangeHandler = (e) => {
 	  const target = e.target;
 	  const name = target.name;
 	  const value = target.value;
@@ -46,10 +46,10 @@ class BrightMirror extends Component {
 	      ...{ [name]: value }
 	    }
 	  });
-	}
+  }
 
 
-	changeQueriedBrightMirrorHandler = (e) => {
+  changeQueriedBrightMirrorHandler = (e) => {
 	  this.setState({
 	    brightMirrorToReadId: e.target.value
 	  });
@@ -68,13 +68,13 @@ class BrightMirror extends Component {
 	        this.setState({ errorStatus: error });
 	      }
 	    );
-	}
-	// special handler for RichText
-	editorStoryInputHandler = (e) => {
+  }
+  // special handler for RichText
+  editorStoryInputHandler = (e) => {
 	  this.setState({ story: { ...this.state.story, ...{ body: e.target.innerHTML } } });
-	}
+  }
 
-	saveToServer = (asDraft) => {
+  saveToServer = (asDraft) => {
 	  const jsonBody = JSON.stringify(this.state.story);
 	  let endpoint = this.newPostEndpoint;
 	  if (asDraft === true) {
@@ -100,28 +100,28 @@ class BrightMirror extends Component {
 	        });
 	      }
 	    );
-	}
+  }
 
-	submitStoryHandler = (e) => {
+  submitStoryHandler = (e) => {
 	  e.preventDefault();
 	  this.saveToServer(false);
-	}
+  }
 
-	saveDraftHandler = (e) => {
+  saveDraftHandler = (e) => {
 	  e.preventDefault();
 	  this.saveToServer(true);
-	}
+  }
 
-	croppedContentHandler = (content) => {
+  croppedContentHandler = (content) => {
 	  this.setState({
 	    story: {
 	      ...this.state.story,
 	      ...{ image: content }
 	    }
 	  });
-	}
+  }
 
-	constructor(props) {
+  constructor(props) {
 	  super(props);
 	  this.newPostEndpoint = props.newPostEndpoint;
 	  this.readPostEndpoint = props.readPostEndpoint;
@@ -145,9 +145,9 @@ class BrightMirror extends Component {
 	    errorStatus: null,
 	    appStatus: null
 	  };
-	}
+  }
 
-	componentDidMount() {
+  componentDidMount() {
 	  // get list of bright mirror stories
 	  fetch(this.readPostEndpoint,
 	    {
@@ -168,31 +168,39 @@ class BrightMirror extends Component {
 	        });
 	      }
 	    );
-	}
+  }
 
-	render() {
+  render() {
 	  return (
-	    <div>
-	      <h2><Text id="app.title">bright mirror app</Text></h2>
-	      <BrightMirrorEditor
-		story={this.state.story}
-		inputHandler={this.editorInputChangeHandler}
-		storyInputHandler={this.editorStoryInputHandler}
-		submitHandler={this.submitStoryHandler}
-		croppedContentHandler={this.croppedContentHandler}
-		saveDraftHandler={this.saveDraftHandler}
-		editionLink={this.state.editionLink}
-	      />
-	      <BrightMirrorViewer story={this.state.story} />
-	      <h3><Text id="app.readExisting">Read an existing bright mirror</Text></h3>
-	      <input type="text" onChange={this.changeQueriedBrightMirrorHandler} value={this.state.brightMirrorToReadId} />
-	      <BrightMirrorListSelect options={this.state.brightMirrorList} value={this.state.brightMirrorToReadId} onChange={this.changeQueriedBrightMirrorHandler} />
-	      <BrightMirrorViewer story={this.state.brightMirrorToRead} />
-	      <div class="status">{this.state.appStatus}</div>
-	      <div class="error">{this.state.errorStatus}</div>
-	    </div>
+      <div>
+        <h2><Text id="app.title">bright mirror app</Text></h2>
+        <BrightMirrorEditor
+          story={this.state.story}
+          inputHandler={this.editorInputChangeHandler}
+          storyInputHandler={this.editorStoryInputHandler}
+          submitHandler={this.submitStoryHandler}
+          croppedContentHandler={this.croppedContentHandler}
+          saveDraftHandler={this.saveDraftHandler}
+          editionLink={this.state.editionLink}
+        />
+        <BrightMirrorViewer story={this.state.story} />
+        <h3><Text id="app.readExisting">Read an existing bright mirror</Text></h3>
+        <input
+          type="text"
+          onChange={this.changeQueriedBrightMirrorHandler}
+          value={this.state.brightMirrorToReadId}
+        />
+        <BrightMirrorListSelect
+          options={this.state.brightMirrorList}
+          value={this.state.brightMirrorToReadId}
+          onChange={this.changeQueriedBrightMirrorHandler}
+        />
+        <BrightMirrorViewer story={this.state.brightMirrorToRead} />
+        <div class="status">{this.state.appStatus}</div>
+        <div class="error">{this.state.errorStatus}</div>
+      </div>
 	  );
-	}
+  }
 }
 
 @withText({
@@ -215,21 +223,46 @@ class BrightMirrorEditor extends Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
-          <input type="text" className="bmEditorTitle" placeholder={titlePlaceholder} name="title" value={this.props.story.title} onChange={this.props.inputHandler} />
+          <input
+            type="text"
+            className="bmEditorTitle"
+            placeholder={titlePlaceholder}
+            name="title" value={this.props.story.title}
+            onChange={this.props.inputHandler}
+          />
         </label>
         <label>
-          <RichTextEditor className="bmEditorBodyEditor" placeholder={storyBodyPlaceholder} name="body" value={this.props.story.body} onChange={this.props.storyInputHandler} />
+          <RichTextEditor
+            className="bmEditorBodyEditor"
+            placeholder={storyBodyPlaceholder}
+            name="body" value={this.props.story.body}
+            onChange={this.props.storyInputHandler}
+          />
         </label>
         <label>
-          <input className="bmEditorYourName" name="author" type="text" value={this.props.story.author} placeholder={yourNamePlaceholder} onChange={this.props.inputHandler} />
+          <input
+            className="bmEditorYourName"
+            name="author"
+            type="text"
+            value={this.props.story.author}
+            placeholder={yourNamePlaceholder}
+            onChange={this.props.inputHandler}
+          />
         </label>
-        <ImageCropperUploader initialImage={this.props.story.image} croppedContentHandler={this.props.croppedContentHandler} />
+        <ImageCropperUploader
+          initialImage={this.props.story.image}
+          croppedContentHandler={this.props.croppedContentHandler}
+        />
         <div className="bmEditorButtonGroup">
           <input type="submit" onClick={this.props.submitHandler} value={submitStoryText} />
           <input type="submit" onClick={this.props.saveDraftHandler} value={saveDraftText} />
         </div>
         <div className="bmEditorEditLink">
-          <Text id="editor.yourEditLink">Your edit link will appear here when you have pressed one of the buttons</Text>
+          <Text
+            id="editor.yourEditLink"
+          >
+              Your edit link will appear here when you have pressed one of the buttons
+          </Text>
           <CopyToClipboard toCopy={this.props.editionLink} actionText={copyToClipboardText} />
         </div>
 
@@ -239,8 +272,8 @@ class BrightMirrorEditor extends Component {
 }
 
 class CopyToClipboard extends Component {
-	ref = createRef()
-	copyToClipboard = (e) => {
+  ref = createRef()
+  copyToClipboard = (e) => {
 	  e.preventDefault();
 	  this.ref.current.removeAttribute('disabled');
 	  this.ref.current.select();
@@ -252,40 +285,52 @@ class CopyToClipboard extends Component {
 	  else if (document.selection) {
 	    document.selection.empty();
 	  }
-	}
-	render() {
+  }
+  render() {
 	  return (
-	    <>
-	      <input disabled="disabled" type="text" ref={this.ref} className="copy-to-clipboard" value={this.props.toCopy} />
-	      <button onclick={this.copyToClipboard}>{this.props.actionText}</button>
-	    </>);
-	}
+      <>
+        <input
+          disabled="disabled"
+          type="text"
+          ref={this.ref}
+          className="copy-to-clipboard"
+          value={this.props.toCopy}
+        />
+        <button onclick={this.copyToClipboard}>{this.props.actionText}</button>
+      </>);
+  }
 }
 
 class BrightMirrorViewer extends Component {
-	readingTime = (text) => {
+  readingTime = (text) => {
 	  text = text || '';
 	  return Math.ceil(text.split(/\s/g).length / 200);
-	}
-	render() {
+  }
+  render() {
 	  const sane = DOMPurify.sanitize(this.props.story.body);
 	  const rt = this.readingTime(sane);
 	  return (
-	    <article>
-	      <h1>{this.props.story.title}</h1>
-	      {this.props.story.image ? <img src={this.props.story.image} /> : null}
-	      <p><Text id="reader.textBy">by</Text> {this.props.story.author}</p>
-	      <p><Text id="reader.readingTime" plural={rt} fields={{ duration: rt }}>Reading time: {rt}</Text></p>
-	      {
-	        // eslint-disable-next-line react/no-danger
-	      }<div dangerouslySetInnerHTML={{ __html: sane }} />
-	    </article>
+      <article>
+        <h1>{this.props.story.title}</h1>
+        {this.props.story.image ? <img src={this.props.story.image} /> : null}
+        <p>
+          <Text id="reader.textBy">by </Text>{this.props.story.author}
+        </p>
+        <p>
+          <Text id="reader.readingTime"
+            plural={rt}
+            fields={{ duration: rt }}
+          >Reading time: {rt}
+          </Text>
+        </p>
+        { /* eslint-disable-next-line react/no-danger */ }
+        <div dangerouslySetInnerHTML={{ __html: sane }} />
+      </article>
 	  );
-	}
+  }
 }
 
 
-// I'm stupid and this component is tightly bound to the READ list API.
 class BrightMirrorListSelect extends Component {
   render() {
     const options = this.props.options;
@@ -310,8 +355,8 @@ class BrightMirrorListSelect extends Component {
 
 // rich text editor
 class RichTextEditor extends Component {
-	editor = null
-	componentDidMount() {
+  editor = null
+  componentDidMount() {
 	  this.editor = new MediumEditor('.richtexteditor',
 	    {
 	      toolbar: {
@@ -322,28 +367,28 @@ class RichTextEditor extends Component {
 	      }
 	    });
 	  this.editor.subscribe('editableInput', this.props.onChange);
-	}
+  }
 
-	render() {
+  render() {
 	  return (
-	    <div className="RichTextEditor">
-	      <div className="richtexteditor" />
-	    </div>
+      <div className="RichTextEditor">
+        <div className="richtexteditor" />
+      </div>
 	  );
-	}
+  }
 }
 
 class ImageCropperUploader extends Component {
-	imgRef = createRef()
-	cropper = null
-	fileReader = null
-	file = null
-	state = {
+  imgRef = createRef()
+  cropper = null
+  fileReader = null
+  file = null
+  state = {
 	  cropped: false,
 	  hasImage: false
-	}
+  }
 
-	consumeContent = (content) => {
+  consumeContent = (content) => {
 	  const ref = this.imgRef;
 	  let context = this.imgRef.current.getContext('2d');
 	  let img = new Image();
@@ -366,13 +411,13 @@ class ImageCropperUploader extends Component {
 	    this.setState({ hasImage: false });
 	  }
 
-	}
-	handleFileRead = (e) => {
+  }
+  handleFileRead = (e) => {
 	  const content = this.fileReader.result;
 	  return this.consumeContent(content);
-	}
+  }
 
-	crop = (e) => {
+  crop = (e) => {
 	  e.preventDefault();
 	  e.target.disabled = 'disabled';
 	  let croppedImageDataURL = this.cropper.getCroppedCanvas().toDataURL('image/png');
@@ -389,40 +434,49 @@ class ImageCropperUploader extends Component {
 	  this.cropper.destroy();
 	  this.setState({ cropped: true });
 
-	}
+  }
 
-	resetCrop = (e) => {
+  resetCrop = (e) => {
 	  e.preventDefault();
 	  this.cropper.reset();
 	  this.props.croppedContentHandler(null);
 	  this.fileReader.readAsDataURL(this.file);
 	  this.setState({ cropped: false });
-	}
+  }
 
-	handleFileChosen = (e) => {
+  handleFileChosen = (e) => {
 	  const file = e.target.files[0];
 	  this.file = file;
 	  this.fileReader = new FileReader();
 	  this.fileReader.onloadend = this.handleFileRead;
 	  this.fileReader.readAsDataURL(file);
-	}
+  }
 
-	componentDidMount() {
+  componentDidMount() {
 	  this.consumeContent(this.state.initialImage);
-	}
+  }
 
-	render() {
+  render() {
 	  return (
-	    <div class="imageUploader">
-	      <input
-		className="imageUploaderFile"
-		type="file" accept="image/*"
-		onChange={this.handleFileChosen}
-	      />
-	      <canvas ref={this.imgRef} />
-	      <button disabled={!this.state.hasImage || this.state.cropped} onClick={this.crop}><Text id="imageUploader.crop">Crop image</Text></button>
-	      <button disabled={!(this.state.cropped)} onClick={this.resetCrop}><Text id="imageUploader.resetCrop">Reset crop</Text></button>
-	    </div>
+      <div class="imageUploader">
+        <input
+          className="imageUploaderFile"
+          type="file" accept="image/*"
+          onChange={this.handleFileChosen}
+        />
+        <canvas ref={this.imgRef} />
+        <button
+          disabled={!this.state.hasImage || this.state.cropped}
+          onClick={this.crop}
+        >
+          <Text id="imageUploader.crop">Crop image</Text>
+        </button>
+        <button
+          disabled={!(this.state.cropped)} onClick={this.resetCrop}
+        >
+          <Text id="imageUploader.resetCrop">Reset crop</Text>
+        </button>
+      </div>
 	  );
-	}
+  }
 }

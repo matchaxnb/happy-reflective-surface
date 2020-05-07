@@ -12,8 +12,9 @@
   "eslintConfig": {
     "extends": "eslint-config-synacor",
     "rules": {
-      "max-len": ["error", 130],
-      "indent": ["error", 2]
+      "indent": ["error", 2],
+      "max-len": ["warn", 130],
+      "react/jsx-indent-props": "off"
     }
   },
   "eslintIgnore": [

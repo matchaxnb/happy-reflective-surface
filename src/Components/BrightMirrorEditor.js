@@ -66,7 +66,7 @@ export class BrightMirrorEditor extends Component {
 
 const BrightMirrorEditorStyledContainer = styled.form`
 border: 1px solid black;
-
+max-width: 100%;
 .bmEditorTitle {
   background: rgba(240, 240, 240, 0.8);
   width: 100%;

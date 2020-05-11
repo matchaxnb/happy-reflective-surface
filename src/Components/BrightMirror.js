@@ -5,6 +5,7 @@ import { LBM_STATUS_SUBMITTED, LBM_STATUS_ERROR, LBM_STATUS_READY } from '../ind
 import { BrightMirrorListSelect } from './BrightMirrorListSelect';
 import { BrightMirrorViewer } from './BrightMirrorViewer';
 import { BrightMirrorEditor } from './BrightMirrorEditor';
+import DOMPurify from 'dompurify';
 
 export class BrightMirror extends Component {
   editorInputChangeHandler = (e) => {
@@ -80,25 +81,31 @@ export class BrightMirror extends Component {
   recomputePercentage = () => {
     const curPer = this.state.progressPercentage;
     let newPer = 0;
-    // story title: 15% if you match, 0% otherwise
+    // story title: 5% if you match, 0% otherwise
     const story = this.state.story;
     if (story.title && story.title.length >= this.props.targetTitleLength) {
-      newPer += 15;
+      newPer += 5;
     }
     // your nickname: same.
     if (story.author && story.author.length >= this.props.targetAuthorNicknameLength) {
-      newPer += 15;
+      newPer += 5;
     }
-    // story body: max 70%; each (targetLength / 7) chars gets you 10%
+    // picture: 10%
+    if (story.image) {
+      newPer += 10;
+    }
+    // story body: max 80%; each (targetLength / 8) chars gets you 10%
     if (story.body) {
-      const storyLen = this.state.story.body.length;
-      const score = Math.min(70, Math.ceil(storyLen / (this.props.targetStoryLength / 7)) * 10);
+      const pureTextBody = DOMPurify.sanitize(story.body, { ALLOWED_TAGS: [] });
+      const storyLen = pureTextBody.length;
+      const score = Math.min(70, Math.ceil(storyLen / (this.props.targetStoryLength / 8)) * 10);
       newPer += score;
     }
     if (newPer !== curPer) {
       this.setState({ progressPercentage: newPer });
     }
   };
+
   constructor(props) {
     super(props);
     this.newPostEndpoint = props.newPostEndpoint;
@@ -145,7 +152,8 @@ export class BrightMirror extends Component {
   render() {
     return (<BrightMirrorStyledContainer className="bmApp">
       <h2 className="appTitle"><Text id="app.title">bright mirror app</Text></h2>
-      <h3 className="brightMirrorTheme"><Text id="app.activeThematic">Active thematic</Text></h3>
+      <h3 className="brightMirrorTheme">{this.props.topic}</h3>
+      <p className="brightMirrorThemeDescription">{this.props.topicDescription}</p>
       <BrightMirrorEditor
         story={this.state.story}
         inputHandler={this.editorInputChangeHandler}
@@ -173,12 +181,15 @@ export class BrightMirror extends Component {
 BrightMirror.defaultProps = {
   targetStoryLength: 350,
   targetTitleLength: 8,
-  targetAuthorNicknameLength: 4
+  targetAuthorNicknameLength: 4,
+  topic: 'example bright mirror topic',
+  topicDescription: 'example bright mirror topic description'
 };
 const BrightMirrorStyledContainer = styled.div`
-display: grid;
+display: block;
 place-items: center;
 max-width: 800px;
+width: 100%;
 border: 1px solid black;
 .appTitle {
   font-weight: bold;

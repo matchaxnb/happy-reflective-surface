@@ -2,6 +2,16 @@ require('cropperjs/dist/cropper.css');
 import Cropper from 'cropperjs';
 import { Component, createRef } from 'preact';
 import { Text } from 'preact-i18n';
+import styled from 'styled-components';
+
+const ImageCropperUploaderWrapper = styled.div`
+max-width: 100%;
+img, canvas {
+  max-width: 320px;
+  max-height: 320px;
+}
+`;
+
 export class ImageCropperUploader extends Component {
   imgRef = createRef();
   cropper = null;
@@ -70,7 +80,7 @@ export class ImageCropperUploader extends Component {
     this.consumeContent(this.state.initialImage);
   }
   render() {
-    return (<div class="imageUploader">
+    return (<ImageCropperUploaderWrapper class="imageUploader">
       <input className="imageUploaderFile" type="file" accept="image/*" onChange={this.handleFileChosen} />
       <canvas ref={this.imgRef} />
       <button disabled={!this.state.hasImage || this.state.cropped} onClick={this.crop}>
@@ -79,6 +89,6 @@ export class ImageCropperUploader extends Component {
       <button disabled={!(this.state.cropped)} onClick={this.resetCrop}>
         <Text id="imageUploader.resetCrop">Reset crop</Text>
       </button>
-    </div>);
+    </ImageCropperUploaderWrapper>);
   }
 }

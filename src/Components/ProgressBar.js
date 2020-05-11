@@ -9,9 +9,9 @@ height: 1em;
   background: lightgreen;
 }
 `;
-const ProgressBar = ({ children, props }) =>  (
+export const ProgressBar = ({ children, ...props }) =>  (
   <ProgressBarWrapper>
-    <div className="pbBar" style={'--currentProgress: ' + this.props.percentage + '%'} />
+    <div className="pbBar" style={'--currentProgress: ' + props.percentage + '%'} />
   </ProgressBarWrapper>
 );
 export default ProgressBar;

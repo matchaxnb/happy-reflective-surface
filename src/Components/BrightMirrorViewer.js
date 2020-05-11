@@ -19,7 +19,7 @@ export class BrightMirrorViewer extends Component {
         <Text id="reader.readingTime" plural={rt} fields={{ duration: rt }}>Reading time: {rt}
         </Text>
       </p>
-
+      { /* eslint-disable-next-line react/no-danger */ }
       <div dangerouslySetInnerHTML={{ __html: sane }} />
     </article>);
   }

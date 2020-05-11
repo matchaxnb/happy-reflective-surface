@@ -1,10 +1,10 @@
 import { Component } from 'preact';
 import { withText, Text } from 'preact-i18n';
 import { ProgressBar } from './ProgressBar';
-import { ImageCropperUploader } from "./ImageCropperUploader";
-import { CopyToClipboard } from "./CopyToClipboard";
-import { RichTextEditor } from "./RichTextEditor";
-import styled from "styled-components";
+import { ImageCropperUploader } from './ImageCropperUploader';
+import { CopyToClipboard } from './CopyToClipboard';
+import { RichTextEditor } from './RichTextEditor';
+import styled from 'styled-components';
 @withText({
   titlePlaceholder: 'editor.storyTitle',
   storyBodyPlaceholder: 'editor.storyBody',
@@ -23,10 +23,32 @@ export class BrightMirrorEditor extends Component {
     const copyToClipboardText = this.props.copyToClipboardText;
     return (<BrightMirrorEditorStyledContainer onSubmit={this.handleSubmit}>
       <ProgressBar percentage={this.props.percentage} />
-      <input type="text" className="bmEditorTitle" placeholder={titlePlaceholder} name="title" value={this.props.story.title} onChange={this.props.inputHandler} />
-      <RichTextEditor className="bmEditorBodyEditor" placeholder={storyBodyPlaceholder} name="body" value={this.props.story.body} onChange={this.props.storyInputHandler} />
-      <input className="bmEditorYourName" name="author" type="text" value={this.props.story.author} placeholder={yourNamePlaceholder} onChange={this.props.inputHandler} />
-      <ImageCropperUploader initialImage={this.props.story.image} croppedContentHandler={this.props.croppedContentHandler} />
+      <input type="text"
+        className="bmEditorTitle"
+        placeholder={titlePlaceholder}
+        name="title"
+        value={this.props.story.title}
+        onChange={this.props.inputHandler}
+      />
+      <RichTextEditor
+        className="bmEditorBodyEditor"
+        placeholder={storyBodyPlaceholder}
+        name="body"
+        value={this.props.story.body}
+        onChange={this.props.storyInputHandler}
+      />
+      <input
+        className="bmEditorYourName"
+        name="author"
+        type="text"
+        value={this.props.story.author}
+        placeholder={yourNamePlaceholder}
+        onChange={this.props.inputHandler}
+      />
+      <ImageCropperUploader
+        initialImage={this.props.story.image}
+        croppedContentHandler={this.props.croppedContentHandler}
+      />
       <div className="bmEditorButtonGroup">
         <input type="submit" onClick={this.props.submitHandler} value={submitStoryText} />
         <input type="submit" onClick={this.props.saveDraftHandler} value={saveDraftText} />
@@ -34,7 +56,7 @@ export class BrightMirrorEditor extends Component {
       <div className="bmEditorEditLink">
         <Text id="editor.yourEditLink">
           Your edit link will appear here when you have pressed one of the buttons
-          </Text>
+        </Text>
         <CopyToClipboard toCopy={this.props.editionLink} actionText={copyToClipboardText} />
       </div>
 
@@ -64,4 +86,4 @@ border: 1px solid black;
   width: 100%;
 }
 .
-`
+`;

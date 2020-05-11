@@ -2,9 +2,9 @@ import { Component } from 'preact';
 import { Text } from 'preact-i18n';
 import styled from 'styled-components';
 import { LBM_STATUS_SUBMITTED, LBM_STATUS_ERROR, LBM_STATUS_READY } from '../index';
-import { BrightMirrorListSelect } from "./BrightMirrorListSelect";
-import { BrightMirrorViewer } from "./BrightMirrorViewer";
-import { BrightMirrorEditor} from "./BrightMirrorEditor";
+import { BrightMirrorListSelect } from './BrightMirrorListSelect';
+import { BrightMirrorViewer } from './BrightMirrorViewer';
+import { BrightMirrorEditor } from './BrightMirrorEditor';
 
 export class BrightMirror extends Component {
   editorInputChangeHandler = (e) => {
@@ -95,7 +95,7 @@ export class BrightMirror extends Component {
       const score = Math.min(70, Math.ceil(storyLen / (this.props.targetStoryLength / 7)) * 10);
       newPer += score;
     }
-    if (newPer != curPer) {
+    if (newPer !== curPer) {
       this.setState({ progressPercentage: newPer });
     }
   };
@@ -146,11 +146,24 @@ export class BrightMirror extends Component {
     return (<BrightMirrorStyledContainer className="bmApp">
       <h2 className="appTitle"><Text id="app.title">bright mirror app</Text></h2>
       <h3 className="brightMirrorTheme"><Text id="app.activeThematic">Active thematic</Text></h3>
-      <BrightMirrorEditor story={this.state.story} inputHandler={this.editorInputChangeHandler} storyInputHandler={this.editorStoryInputHandler} submitHandler={this.submitStoryHandler} croppedContentHandler={this.croppedContentHandler} saveDraftHandler={this.saveDraftHandler} editionLink={this.state.editionLink} percentage={this.state.progressPercentage} />
+      <BrightMirrorEditor
+        story={this.state.story}
+        inputHandler={this.editorInputChangeHandler}
+        storyInputHandler={this.editorStoryInputHandler}
+        submitHandler={this.submitStoryHandler}
+        croppedContentHandler={this.croppedContentHandler}
+        saveDraftHandler={this.saveDraftHandler}
+        editionLink={this.state.editionLink}
+        percentage={this.state.progressPercentage}
+      />
       <BrightMirrorViewer story={this.state.story} />
       <h3><Text id="app.readExisting">Read an existing bright mirror</Text></h3>
       <input type="text" onChange={this.changeQueriedBrightMirrorHandler} value={this.state.brightMirrorToReadId} />
-      <BrightMirrorListSelect options={this.state.brightMirrorList} value={this.state.brightMirrorToReadId} onChange={this.changeQueriedBrightMirrorHandler} />
+      <BrightMirrorListSelect
+        options={this.state.brightMirrorList}
+        value={this.state.brightMirrorToReadId}
+        onChange={this.changeQueriedBrightMirrorHandler}
+      />
       <BrightMirrorViewer story={this.state.brightMirrorToRead} />
       <div class="status">{this.state.appStatus}</div>
       <div class="error">{this.state.errorStatus}</div>

@@ -1,23 +1,26 @@
 {
- "app": {
-   "title": "Bright Mirror par bluenove",
-   "readExisting": "Lire une histoire",
-   "footer": "Bright Mirror par bluenove"
- },
- "editor": {
-   "yourName": "Votre pseudonyme",
-   "storyTitle": "Le titre de votre histoire",
-   "storyBody": "Votre récit",
-   "submitStory": "Soumettre votre récit",
-   "saveDraft": "Sauvegarder le brouillon",
-   "copyToClipboard": "Copier le lien"
- },
- "reader": {
-   "textBy": "Une histoire de",
-   "readingTime": "Temps de lecture: {{duration}} min."
- },
- "imageUploader": {
-  "resetCrop": "Réinitialiser l'image",
-  "crop": "Recadrer"
-  }
-}
+  "app": {
+    "title": "Bright Mirror",
+    "readExisting": "Choisir un récit",
+    "footer": "Bright Mirror"
+  },
+  "editor": {
+    "yourName": "Votre pseudonyme",
+    "storyTitle": "Votre titre",
+    "storyBody": "Écrire votre récit ici...",
+    "storySummary": "Écrire votre message",
+    "summaryDescriptionText": "Quel est le principal message de votre récit ou de votre histoire ?",
+    "submitStory": "Soumettre votre récit",
+    "saveDraft": "Sauvegarder votre brouillon",
+    "copyToClipboard": "Sauvegarder le lien d'édition"
+  },
+  "reader": {
+    "textBy": "par ",
+    "readingTime": "{{duration}} min. de lecture"
+  },
+  "imageUploader": {
+   "resetCrop": "Réinitialiser",
+   "crop": "Recadrer"
+   }
+ }
+ 

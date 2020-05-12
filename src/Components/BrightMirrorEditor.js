@@ -11,7 +11,8 @@ import styled from 'styled-components';
   yourNamePlaceholder: 'editor.yourName',
   submitStoryText: 'editor.submitStory',
   saveDraftText: 'editor.saveDraft',
-  copyToClipboardText: 'editor.copyToClipboard'
+  copyToClipboardText: 'editor.copyToClipboard',
+  storySummaryPlaceholder: 'editor.storySummary'
 })
 export class BrightMirrorEditor extends Component {
   render() {
@@ -21,51 +22,70 @@ export class BrightMirrorEditor extends Component {
     const submitStoryText = this.props.submitStoryText;
     const saveDraftText = this.props.saveDraftText;
     const copyToClipboardText = this.props.copyToClipboardText;
+    const storySummaryPlaceholder = this.props.storySummaryPlaceholder;
     return (<BrightMirrorEditorStyledContainer onSubmit={this.handleSubmit}>
       <ProgressBar percentage={this.props.percentage} />
-      <input type="text"
-        className="bmEditorTitle"
-        placeholder={titlePlaceholder}
-        name="title"
-        value={this.props.story.title}
-        onChange={this.props.inputHandler}
-      />
-      <RichTextEditor
-        className="bmEditorBodyEditor"
-        placeholder={storyBodyPlaceholder}
-        name="body"
-        value={this.props.story.body}
-        onChange={this.props.storyInputHandler}
-      />
-      <input
-        className="bmEditorYourName"
-        name="author"
-        type="text"
-        value={this.props.story.author}
-        placeholder={yourNamePlaceholder}
-        onChange={this.props.inputHandler}
-      />
-      <ImageCropperUploader
-        initialImage={this.props.story.image}
-        croppedContentHandler={this.props.croppedContentHandler}
-      />
-      <div className="bmEditorButtonGroup">
-        <input type="submit" onClick={this.props.submitHandler} value={submitStoryText} />
-        <input type="submit" onClick={this.props.saveDraftHandler} value={saveDraftText} />
-      </div>
-      <div className="bmEditorEditLink">
-        <Text id="editor.yourEditLink">
-          Your edit link will appear here when you have pressed one of the buttons
-        </Text>
-        <CopyToClipboard toCopy={this.props.editionLink} actionText={copyToClipboardText} />
-      </div>
+      <section class="bmEditorMainSection">
+        <input type="text"
+          className="bmEditorTitle"
+          placeholder={titlePlaceholder}
+          name="title"
+          value={this.props.story.title}
+          onChange={this.props.inputHandler}
+        />
+        <RichTextEditor
+          className="bmEditorBodyEditor"
+          placeholder={storyBodyPlaceholder}
+          name="body"
+          value={this.props.story.body}
+          onChange={this.props.storyInputHandler}
+        />
+      </section>
+      <section class="bmEditorSummarySection">
+        <div className="bmEditorTextBeforeSumUp">
+          <p>
+            <Text id="editor.summaryDescriptionText">What is the main message of your story or testimony?</Text>
+          </p>
+        </div>
+        <RichTextEditor
+          className="bmEditorSummaryTextEditor"
+          placeholder={storySummaryPlaceholder}
+          name="summary"
+          value={this.props.story.summary}
+          onChange={this.props.summaryInputHandler}
+        />
+      </section>
+      <section class="bmEditorMetaSection">
+        <input
+          className="bmEditorYourName"
+          name="author"
+          type="text"
+          value={this.props.story.author}
+          placeholder={yourNamePlaceholder}
+          onChange={this.props.inputHandler}
+        />
+        <ImageCropperUploader
+          initialImage={this.props.story.image}
+          croppedContentHandler={this.props.croppedContentHandler}
+        />
+      </section>
+      <section class="bmEditorActionButtonsSection">
+        <div className="bmEditorButtonGroup">
+          <input type="submit" onClick={this.props.submitHandler} value={submitStoryText} />
+          <input type="submit" onClick={this.props.saveDraftHandler} value={saveDraftText} />
+        </div>
+        <BrightMirrorEditorLoadSaveForm
+          render={false}
+          copyToClipboardText={copyToClipboardText}
+          editionLink={this.props.editionLink}
+        />
+      </section>
 
     </BrightMirrorEditorStyledContainer>);
   }
 }
 
 const BrightMirrorEditorStyledContainer = styled.form`
-border: 1px solid black;
 max-width: 100%;
 .bmEditorTitle {
   background: rgba(240, 240, 240, 0.8);
@@ -85,5 +105,27 @@ max-width: 100%;
 .bmEditorBodyEditor {
   width: 100%;
 }
+section {
+  border-top: 4px solid #dddddd;
+  padding-top: 1em;
+}
 .
 `;
+
+const BrightMirrorEditorLoadSaveForm = ({ children, ...props }) => {
+  if (props.render === true) {
+    return (
+      <div className="bmEditorEditLoadSaveGroup">
+        <Text id="editor.yourEditLink">
+          Your edit link will appear here when you have pressed one of the buttons
+        </Text>
+        <CopyToClipboard toCopy={props.editionLink} actionText={props.copyToClipboardText} />
+      </div>
+    );
+  }
+  
+  return (
+    <div className="bmEditorLoadSaveGroup" />
+  );
+  
+};

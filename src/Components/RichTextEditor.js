@@ -17,7 +17,7 @@ export class RichTextEditor extends Component {
     this.editor.subscribe('editableInput', this.props.onChange);
   }
   render() {
-    return (<div className={this.props.className} />);
+    return (<div name={this.props.name} className={this.props.className} />);
   }
 }
 RichTextEditor.defaultProps = {

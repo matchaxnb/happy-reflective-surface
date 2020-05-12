@@ -81,8 +81,8 @@ export class ImageCropperUploader extends Component {
   }
   render() {
     return (<ImageCropperUploaderWrapper class="imageUploader">
-      <input className="imageUploaderFile" type="file" accept="image/*" onChange={this.handleFileChosen} />
-      <canvas ref={this.imgRef} />
+      <input disabled={this.state.cropped} className="imageUploaderFile" type="file" accept="image/*" onChange={this.handleFileChosen} />
+      <canvas height={0} ref={this.imgRef} />
       <button disabled={!this.state.hasImage || this.state.cropped} onClick={this.crop}>
         <Text id="imageUploader.crop">Crop image</Text>
       </button>

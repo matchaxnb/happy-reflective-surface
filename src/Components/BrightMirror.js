@@ -36,8 +36,11 @@ export class BrightMirror extends Component {
       });
   };
   // special handler for RichText
-  editorStoryInputHandler = (e) => {
-    this.setState({ story: { ...this.state.story, ...{ body: e.target.innerHTML } } }, () => { this.recomputePercentage(); });
+  editorRichTextInputHandler  = (e) => {
+    const fieldName = e.target.getAttribute('name');
+    this.setState(
+      { story: { ...this.state.story, ...{ [fieldName]: e.target.innerHTML } } },
+      () => { this.recomputePercentage(); });
   };
   saveToServer = (asDraft) => {
     const jsonBody = JSON.stringify(this.state.story);
@@ -86,19 +89,23 @@ export class BrightMirror extends Component {
     if (story.title && story.title.length >= this.props.targetTitleLength) {
       newPer += 5;
     }
-    // your nickname: same.
+    // your nickname: 5%
     if (story.author && story.author.length >= this.props.targetAuthorNicknameLength) {
       newPer += 5;
+    }
+    // summary: 10%
+    if (story.summary) {
+      newPer += 10;
     }
     // picture: 10%
     if (story.image) {
       newPer += 10;
     }
-    // story body: max 80%; each (targetLength / 8) chars gets you 10%
+    // story body: max 70%; each (targetLength / 7) chars gets you 10%
     if (story.body) {
       const pureTextBody = DOMPurify.sanitize(story.body, { ALLOWED_TAGS: [] });
       const storyLen = pureTextBody.length;
-      const score = Math.min(70, Math.ceil(storyLen / (this.props.targetStoryLength / 8)) * 10);
+      const score = Math.min(70, Math.ceil(storyLen / (this.props.targetStoryLength / 7)) * 10);
       newPer += score;
     }
     if (newPer !== curPer) {
@@ -115,13 +122,15 @@ export class BrightMirror extends Component {
         author: '',
         title: '',
         body: '',
+        summary: '',
         image: null
       },
       editionLink: '#',
       brightMirrorToRead: {
         author: '',
         title: '',
-        body: ''
+        body: '',
+        summary: ''
       },
       brightMirrorToReadId: 0,
       brightMirrorList: [
@@ -153,11 +162,12 @@ export class BrightMirror extends Component {
     return (<BrightMirrorStyledContainer className="bmApp">
       <h2 className="appTitle"><Text id="app.title">bright mirror app</Text></h2>
       <h3 className="brightMirrorTheme">{this.props.topic}</h3>
-      <p className="brightMirrorThemeDescription">{this.props.topicDescription}</p>
+      <p className="brightMirrorThemeDescription">{this.props.instructions}</p>
       <BrightMirrorEditor
         story={this.state.story}
         inputHandler={this.editorInputChangeHandler}
-        storyInputHandler={this.editorStoryInputHandler}
+        storyInputHandler={this.editorRichTextInputHandler}
+        summaryInputHandler={this.editorRichTextInputHandler}
         submitHandler={this.submitStoryHandler}
         croppedContentHandler={this.croppedContentHandler}
         saveDraftHandler={this.saveDraftHandler}
@@ -183,19 +193,21 @@ BrightMirror.defaultProps = {
   targetTitleLength: 8,
   targetAuthorNicknameLength: 4,
   topic: 'example bright mirror topic',
-  topicDescription: 'example bright mirror topic description'
+  instructions: 'example bright mirror topic description'
 };
 const BrightMirrorStyledContainer = styled.div`
 display: block;
+margin: 0 auto;
 place-items: center;
 max-width: 800px;
 width: 100%;
-border: 1px solid black;
 .appTitle {
   font-weight: bold;
-  color: red;
+  color: black;
+  font-size: 2em;
 }
 h3.brightMirrorTheme {
-  color: green;
+  color: black;
+  font-size: 1.2em;
 }
 `;

@@ -8,6 +8,7 @@
    "yourName": "Your nickname",
    "storyTitle": "Story title",
    "storyBody": "Your story goes here",
+   "storySummary": "Your summary goes here",
    "submitStory": "Submit your story",
    "saveDraft": "Save draft",
    "copyToClipboard": "Copy edit link"

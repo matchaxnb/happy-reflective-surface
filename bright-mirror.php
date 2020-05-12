@@ -65,10 +65,10 @@ function handle_list_bm_posts($data) {
         return ['error' => 'not-allowed'];
     }
     $bmPosts = \get_posts([
-        'post_type' => 'bright-mirror',
-        'numberposts' => 30,
-        'post_status' => 'publish',
-        'fields' => 'all',
+            'post_type' => 'bright-mirror',
+            'numberposts' => 30,
+            'post_status' => 'publish',
+            'fields' => 'all',
     ]);
     $result = [];
     foreach($bmPosts as $bmPost) {
@@ -81,11 +81,11 @@ function handle_list_bm_posts($data) {
 function handle_read_bm_post($data) {
     $id = $data->get_param('id');
     $bmPost = \get_posts([
-        'post_type' => 'bright-mirror',
-        'include' => [$id],
-        'numberposts' => 1,
-        'post_status' => 'publish',
-        'fields' => 'ids',
+            'post_type' => 'bright-mirror',
+            'include' => [$id],
+            'numberposts' => 1,
+            'post_status' => 'publish',
+            'fields' => 'ids',
     ]);
     if (count($bmPost)!==1) {
         return ['error' => 'not-allowed'];
@@ -98,6 +98,7 @@ function handle_read_bm_post($data) {
         'id' => $bm->post_id,
         'title' => $bm->post_title,
         'body' => $bm->post_content,
+        'summary' => $bm->post_excerpt,
         'author' => $author_nickname,
         'image' => $post_thumbnail,
     ];
@@ -111,34 +112,35 @@ function handle_create_bm_post($data) {
         //        return \WP_Error('not_allowed', 'You are not allowed to do that');
         return ['error' => 'not-allowed'];
     }
-	$body = $data->get_json_params();
-	$user = \get_user_by('login', 'brightmirror');
-	// insert the post and set a random int to it for later use
-	$randomid = \bin2hex(\random_bytes(12));
+    $body = $data->get_json_params();
+    $user = \get_user_by('login', 'brightmirror');
+    // insert the post and set a random int to it for later use
+    $randomid = \bin2hex(\random_bytes(12));
     $author = $body['author'] ?: __('Anonymous bright mirror contributor', 'bright-mirror');
-	$res = \wp_insert_post([
-		'post_author' => $user->ID,
-		'post_title' => \wp_kses_post($body['title']),
-		'post_content' => wp_kses_post($body['body']),
-		'post_type' => 'bright-mirror',
-		'post_status' => 'publish',
-		'meta_input' => [
-			'extra_id' => $randomid,
+    $res = \wp_insert_post([
+            'post_author' => $user->ID,
+            'post_title' => \wpautop(\wp_kses_post($body['title'])),
+            'post_content' => \wpautop(\wp_kses_post($body['body'])),
+            'post_type' => 'bright-mirror',
+            'post_excerpt' => \wpautop(\wp_kses_post($body['summary'])),
+            'post_status' => 'publish',
+            'meta_input' => [
+            'extra_id' => $randomid,
             'author_nickname' => $author,
-		],
-	],
-	true);
+            ],
+    ],
+    true);
     $res_image = null;
     if (isset($body['image'])) {
         $image = datauri_to_bytes($body['image']);
         $res_image = add_image_to_post($res, $image);
     }
     $editUrl = \rest_url("brightmirror/v1/stories/${res}?extra_id=${randomid}");
-	return [
+    return [
         'post_id' => $res,
         'extra_id' => \hash('sha256', $randomid),
         'edit_url' => $editUrl,
-        ];
+    ];
 }
 
 // there is no DELETE from the API. If you want to delete, use the back-office.
@@ -147,29 +149,29 @@ function handle_create_bm_post($data) {
 
 // add image bits as a featured image for a post
 function add_image_to_post($post_id, $imagebits){
-	$upload = \wp_upload_bits("illustration_${post_id}.png", null, $imagebits);
+    $upload = \wp_upload_bits("illustration_${post_id}.png", null, $imagebits);
 
-	if (!$upload['error'] ) {
-		$filename = $upload['file'];
-		$wp_filetype = \wp_check_filetype($filename, null);
-		$attachment = array(
-			'post_mime_type' => $wp_filetype['type'],
-			'post_title' => \sanitize_file_name(basename($filename)),
-			'post_content' => '',
-			'post_status' => 'inherit'
-		);
+    if (!$upload['error'] ) {
+        $filename = $upload['file'];
+        $wp_filetype = \wp_check_filetype($filename, null);
+        $attachment = array(
+                'post_mime_type' => $wp_filetype['type'],
+                'post_title' => \sanitize_file_name(basename($filename)),
+                'post_content' => '',
+                'post_status' => 'inherit'
+                );
 
-		$attachment_id = wp_insert_attachment($attachment, $filename, $post_id);
+        $attachment_id = wp_insert_attachment($attachment, $filename, $post_id);
 
-		if (!is_wp_error( $attachment_id ) ) {
-			require_once(ABSPATH . 'wp-admin/includes/image.php');
+        if (!is_wp_error( $attachment_id ) ) {
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
 
-			$attachment_data = wp_generate_attachment_metadata( $attachment_id, $filename );
-			wp_update_attachment_metadata( $attachment_id, $attachment_data );
-			set_post_thumbnail( $post_id, $attachment_id );
-		}
+            $attachment_data = wp_generate_attachment_metadata( $attachment_id, $filename );
+            wp_update_attachment_metadata( $attachment_id, $attachment_data );
+            set_post_thumbnail( $post_id, $attachment_id );
+        }
         return ['status' => 'ok'];
-	}
+    }
     return ['status' => 'nok'];
 
 }
@@ -188,37 +190,37 @@ function datauri_to_bytes($nib) {
 // post type bright-mirror
 function create_posttype() {
     register_post_type('bright-mirror',
-        array(
-            'labels' => array(
-                'name' => __('bright-mirror'),
-                'singular_name' => __('Bright Mirror Entry', 'bright-mirror'),
-            ),
-            'public' => true,
-            'has_archive' => true,
-            'rewrite' => array('slug' => 'bright-mirror'),
-            'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+            array(
+                'labels' => array(
+                    'name' => __('bright-mirror'),
+                    'singular_name' => __('Bright Mirror Entry', 'bright-mirror'),
+                    ),
+                'public' => true,
+                'has_archive' => true,
+                'rewrite' => array('slug' => 'bright-mirror'),
+                'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
 
-        )
-    );
+                )
+            );
 }
 // post handling
 function add_rest_api_handler() {
     register_rest_route('brightmirror/v1', 'stories',
-        [[
+            [[
             'methods' => 'POST',
             'callback' => '\BrightMirror\handle_create_bm_post'
-         ],
-         [
+            ],
+            [
             'methods' => 'GET',
             'callback' => '\BrightMirror\handle_list_bm_posts',
-        ]]
-    );
+            ]]
+            );
     register_rest_route('brightmirror/v1', 'stories/(?P<id>\d+)',
-        [
-        'methods' => 'GET',
-        'callback' => '\BrightMirror\handle_read_bm_post',
-        ]
-    );
+            [
+            'methods' => 'GET',
+            'callback' => '\BrightMirror\handle_read_bm_post',
+            ]
+            );
 
 }
 
@@ -227,20 +229,20 @@ function add_rest_api_handler() {
 // admin menu thingies
 function register_admin_menu() {
     \add_menu_page(
-        __('Bright Mirror', 'bright-mirror'),
-        __('Bright Mirror', 'bright-mirror'),
-        'administrator',
-        'bright-mirror-admin',
-        '\BrightMirror\admin_menu',
-        'dashicons-format-aside'
-    );
+            __('Bright Mirror', 'bright-mirror'),
+            __('Bright Mirror', 'bright-mirror'),
+            'administrator',
+            'bright-mirror-admin',
+            '\BrightMirror\admin_menu',
+            'dashicons-format-aside'
+            );
     \add_options_page(
-        __('Bright Mirror', 'bright-mirror'),
-        __('Bright Mirror', 'bright-mirror'),
-        'administrator',
-        'bright-mirror-admin',
-        '\BrightMirror\admin_menu'
-    );
+            __('Bright Mirror', 'bright-mirror'),
+            __('Bright Mirror', 'bright-mirror'),
+            'administrator',
+            'bright-mirror-admin',
+            '\BrightMirror\admin_menu'
+            );
 
 }
 
@@ -251,17 +253,17 @@ function admin_menu() {
 
 function register_settings() {
     add_settings_section(
-        'brightmirror',
-        __('Bright Mirror options', 'bright-mirror'),
-        '\BrightMirror\options_content',
-        'bright-mirror-admin');
+            'brightmirror',
+            __('Bright Mirror options', 'bright-mirror'),
+            '\BrightMirror\options_content',
+            'bright-mirror-admin');
     add_settings_field(
-        'bmallowed_origin',
-        __('Allowed Cross-Origins', 'bright-mirror'),
-        '\BrightMirror\bmallowed_origin_form_content',
-        'bright-mirror-admin',
-        'brightmirror'
-    );
+            'bmallowed_origin',
+            __('Allowed Cross-Origins', 'bright-mirror'),
+            '\BrightMirror\bmallowed_origin_form_content',
+            'bright-mirror-admin',
+            'brightmirror'
+            );
     register_setting('brightmirror', 'bmallowed_origin');
 
 }
@@ -271,9 +273,9 @@ function options_content() {
 }
 
 function bmallowed_origin_form_content() {
-?>
-    <textarea id="bmallowed_origin" name="bmallowed_origin" style="width: 40em; height: 20em;"><?php echo get_option('bmallowed_origin', ''); ?></textarea>
-<?php
+    ?>
+        <textarea id="bmallowed_origin" name="bmallowed_origin" style="width: 40em; height: 20em;"><?php echo get_option('bmallowed_origin', ''); ?></textarea>
+        <?php
 }
 
 

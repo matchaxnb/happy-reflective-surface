@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/wp-content/plugins/bright-mirror/webapp/assets/icon.png"
   },
   {
-    "revision": "9e3fbc56eba9364e1a81",
+    "revision": "bb24ea92173b640da110",
     "url": "/wp-content/plugins/bright-mirror/webapp/bundle.css"
   },
   {
-    "revision": "9e3fbc56eba9364e1a81",
+    "revision": "bb24ea92173b640da110",
     "url": "/wp-content/plugins/bright-mirror/webapp/bundle.js"
   },
   {
@@ -20,7 +20,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/wp-content/plugins/bright-mirror/webapp/sw-debug.js"
   },
   {
-    "revision": "6fa02bf24287036db3ef4180c5ab8f1f",
+    "revision": "b646edbad9ffeb832bd52d47d7476ce7",
     "url": "/wp-content/plugins/bright-mirror/webapp/sw-esm.js"
   },
   {

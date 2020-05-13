@@ -29,6 +29,7 @@
 namespace BrightMirror;
 // some cache buster for later
 define("BRIGHTMIRROR_WEBAPP_VERSION", "ronron");
+define("BRIGHTMIRROR_DEFAULT_POST_STATUS", "draft");
 
 /** Security code **/
 
@@ -124,7 +125,7 @@ function handle_create_bm_post($data) {
             'post_content' => \wpautop(\wp_kses_post($body['body'])),
             'post_type' => 'bright-mirror',
             'post_excerpt' => \wpautop(\wp_kses_post($body['summary'])),
-            'post_status' => 'publish',
+            'post_status' => BRIGHTMIRROR_DEFAULT_POST_STATUS,
             'meta_input' => [
             'extra_id' => $randomid,
             'author_nickname' => $author,
@@ -203,6 +204,33 @@ function create_posttype() {
 
                 )
             );
+    $labels = array(
+            'name' => _x( 'Bright Mirror Tags', 'taxonomy general name' ),
+            'singular_name' => _x( 'Bright Mirror Tag', 'taxonomy singular name' ),
+            'search_items' =>  __( 'Search Tags' ),
+            'popular_items' => __( 'Popular Tags' ),
+            'all_items' => __( 'All Tags' ),
+            'parent_item' => null,
+            'parent_item_colon' => null,
+            'edit_item' => __( 'Edit Tag' ),
+            'update_item' => __( 'Update Tag' ),
+            'add_new_item' => __( 'Add New Tag' ),
+            'new_item_name' => __( 'New Tag Name' ),
+            'separate_items_with_commas' => __( 'Separate tags with commas' ),
+            'add_or_remove_items' => __( 'Add or remove tags' ),
+            'choose_from_most_used' => __( 'Choose from the most used tags' ),
+            'menu_name' => __( 'Tags' ),
+            );
+
+    register_taxonomy('bm_tag','bright-mirror',array(
+                'hierarchical' => false,
+                'labels' => $labels,
+                'show_ui' => true,
+                'update_count_callback' => '_update_post_term_count',
+                'query_var' => true,
+                'rewrite' => array( 'slug' => 'bm-tag' ),
+                ));
+
 }
 // post handling
 function add_rest_api_handler() {
@@ -280,6 +308,10 @@ function bmallowed_origin_form_content() {
 }
 
 function bootstrap() {
+    // prevent issues with autop
+    remove_filter('the_content', 'wpautop');
+    add_filter('the_content', 'wpautop', 12);
+    add_filter( 'no_texturize_shortcodes', '\BrightMirror\bm_no_texturize' );
     add_shortcode('bright_mirror', '\BrightMirror\bright_mirror_shortcode');
 }
 
@@ -287,12 +319,17 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
     wp_enqueue_script('brightmirror-webapp-bundle');
     wp_enqueue_style('brightmirror-webapp-style');
     ?>
-    <div data-widget-host="habitat">
+        <div data-widget-host="habitat">
         <script type="text/props">
         <?php echo $content; ?>
         </script>
-    </div>
-    <?php
+        </div>
+        <?php
+}
+
+function bm_no_texturize( $shortcodes ) {
+    $shortcodes[] = 'bright_mirror';
+    return $shortcodes;
 }
 
 function register_webapp_scripts() {

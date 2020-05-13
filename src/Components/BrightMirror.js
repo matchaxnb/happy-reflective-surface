@@ -1,11 +1,15 @@
 import { Component } from 'preact';
 import { Text } from 'preact-i18n';
 import styled from 'styled-components';
-import { LBM_STATUS_SUBMITTED, LBM_STATUS_ERROR, LBM_STATUS_READY } from '../index';
 import { BrightMirrorListSelect } from './BrightMirrorListSelect';
 import { BrightMirrorViewer } from './BrightMirrorViewer';
 import { BrightMirrorEditor } from './BrightMirrorEditor';
 import DOMPurify from 'dompurify';
+
+const LBM_STATUS_READY = 0b0001;
+const LBM_STATUS_SUBMITTING = 0b0010;
+const LBM_STATUS_SUBMITTED = 0b0100;
+const LBM_STATUS_ERROR = 0b1000;
 
 export class BrightMirror extends Component {
   editorInputChangeHandler = (e) => {

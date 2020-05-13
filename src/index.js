@@ -4,9 +4,6 @@ import definition from './i18n/fr-fr.json';
 import { IntlProvider } from 'preact-i18n';
 import { BrightMirror } from './Components/BrightMirror';
 
-export const LBM_STATUS_READY = 'Ready';
-export const LBM_STATUS_SUBMITTED = 'Submitted';
-export const LBM_STATUS_ERROR = 'Error';
 
 
 const IntlApp = ({ children, ...props }) => (

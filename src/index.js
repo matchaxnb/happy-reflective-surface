@@ -1,8 +1,11 @@
+let poly = require("preact-cli/lib/lib/webpack/polyfills");
 import './style';
+import habitat from 'preact-habitat';
 import { config as appConfig } from './config';
 import definition from './i18n/fr-fr.json';
 import { IntlProvider } from 'preact-i18n';
 import { BrightMirror } from './Components/BrightMirror';
+
 
 
 const IntlApp = ({ children, ...props }) => {
@@ -18,4 +21,8 @@ const IntlApp = ({ children, ...props }) => {
   );
 };
 
-export default IntlApp;
+const _habitat = habitat(IntlApp);
+_habitat.render({
+  selector: '[data-widget-host="habitat"]',
+  clean: true
+});

@@ -6656,6 +6656,11 @@ preact-cli@^3.0.0-rc.6:
     which "^2.0.2"
     workbox-webpack-plugin "^4.3.1"
 
+preact-habitat@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/preact-habitat/-/preact-habitat-3.3.0.tgz#3a176709d9c754d9acd72d2379f0d84fcf532324"
+  integrity sha512-jlwc5sJNFYpAcXx+35Wiw0Smm0oaydJ6pY49c9/klwnYgRdXaBYHzXC6RRof/9W2zMPdHt6c1vXxTXJ0n7V+xQ==
+
 preact-i18n@^2.0.0-preactx.2:
   version "2.0.0-preactx.2"
   resolved "https://registry.yarnpkg.com/preact-i18n/-/preact-i18n-2.0.0-preactx.2.tgz#13736788bf7c677c042e640517dd1d32cef49a06"

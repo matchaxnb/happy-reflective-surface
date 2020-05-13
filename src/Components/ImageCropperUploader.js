@@ -30,7 +30,7 @@ export class ImageCropperUploader extends Component {
       context.canvas.width = img.width;
       context.drawImage(img, 0, 0);
       this.cropper = new Cropper(ref.current, {
-        aspectRatio: 1 / 1
+        aspectRatio: this.props.aspectRatio
       });
     };
     img.src = content;
@@ -81,7 +81,12 @@ export class ImageCropperUploader extends Component {
   }
   render() {
     return (<ImageCropperUploaderWrapper class="imageUploader">
-      <input disabled={this.state.cropped} className="imageUploaderFile" type="file" accept="image/*" onChange={this.handleFileChosen} />
+      <input disabled={this.state.cropped}
+        className="imageUploaderFile"
+        type="file"
+        accept="image/*"
+        onChange={this.handleFileChosen}
+      />
       <canvas height={0} ref={this.imgRef} />
       <button disabled={!this.state.hasImage || this.state.cropped} onClick={this.crop}>
         <Text id="imageUploader.crop">Crop image</Text>
@@ -92,3 +97,7 @@ export class ImageCropperUploader extends Component {
     </ImageCropperUploaderWrapper>);
   }
 }
+
+ImageCropperUploader.defaultProps = {
+  aspectRatio: 4/1
+};

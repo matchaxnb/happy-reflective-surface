@@ -64,16 +64,24 @@ export class BrightMirrorEditor extends Component {
           placeholder={yourNamePlaceholder}
           onChange={this.props.inputHandler}
         />
+        <p>
+          <Text id="editor.featuredImage">Pick an image that will be featured on your story</Text><br />
+          <em class="helpText"><Text id="editor.featuredImageHelp">It will be displayed as a 4:1 banner</Text></em>
+        </p>
+        
         <ImageCropperUploader
           initialImage={this.props.story.image}
           croppedContentHandler={this.props.croppedContentHandler}
         />
       </section>
       <section class="bmEditorActionButtonsSection">
-        <div className="bmEditorButtonGroup">
-          <input type="submit" onClick={this.props.submitHandler} value={submitStoryText} />
-          <input type="submit" onClick={this.props.saveDraftHandler} value={saveDraftText} />
-        </div>
+        <BrightMirrorEditorSubmitButtons
+          submitHandler={this.props.submitHandler}
+          submitStoryText={submitStoryText}
+          saveDraftHandler={this.props.saveDraftHandler}
+          saveDraftText={saveDraftText}
+          allowDrafts={false}
+        />
         <BrightMirrorEditorLoadSaveForm
           render={false}
           copyToClipboardText={copyToClipboardText}
@@ -87,13 +95,16 @@ export class BrightMirrorEditor extends Component {
 
 const BrightMirrorEditorStyledContainer = styled.form`
 max-width: 100%;
+.bmEditorTitle::placeholder {
+  font-style: italic;
+}
 .bmEditorTitle {
   background: rgba(240, 240, 240, 0.8);
   width: 100%;
   padding: 0px;
   border: none;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 2em;
   margin-bottom: 1em;
 }
 .bmEditorBodyEditor {
@@ -102,12 +113,36 @@ max-width: 100%;
   min-height: 10em;
   margin-bottom: 1em;
 }
+.bmEditorYourName {
+  background: rgba(240, 240, 240, 0.8);
+  font-size: 1em;
+  border: none;
+  padding: 0.2em;
+  
+}
+.bmEditorYourName::placeholder {
+  font-style: italic;
+}
 .bmEditorBodyEditor {
   width: 100%;
 }
 section {
   border-top: 4px solid #dddddd;
   padding-top: 1em;
+}
+input[type="submit"] {
+  background: rgb(192, 213, 249);
+  padding: 1em 2em;
+  color: white;
+}
+.bmEditorButtonGroup {
+  margin: 0 auto;
+  width: fit-content;
+}
+input[type="submit"]:hover {
+  background: rgb(0, 117, 196);
+  padding: 1em 2em;
+  color: white;
 }
 .
 `;
@@ -128,4 +163,25 @@ const BrightMirrorEditorLoadSaveForm = ({ children, ...props }) => {
     <div className="bmEditorLoadSaveGroup" />
   );
   
+};
+
+const BrightMirrorEditorSubmitButtons = ({ children, ...props }) => {
+  if (props.allowDrafts) {
+    return (
+      <div className="bmEditorButtonGroup" data-warning="not-implemented">
+        <input type="submit" onClick={props.submitHandler} value={props.submitStoryText} />
+        <input type="submit" onClick={props.saveDraftHandler} value={props.saveDraftText} />
+      </div>
+    );
+  }
+  return (
+    <div className="bmEditorButtonGroup">
+      <input type="submit" onClick={props.submitHandler} value={props.submitStoryText} />
+    </div>
+        
+  );
+};
+
+BrightMirrorEditorSubmitButtons.defaultProps = {
+  allowDrafts: false
 };

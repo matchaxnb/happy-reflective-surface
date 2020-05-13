@@ -2,13 +2,20 @@
   "app": {
     "title": "Bright Mirror",
     "readExisting": "Choisir un récit",
-    "footer": "Bright Mirror"
+    "footer": "Bright Mirror",
+    "storySubmittedTitle": "Votre récit a été enregistré",
+    "storySubmittedBody": "Il sera très prochainement disponible sur <a href=\"{{site}}\">notre portail Bright Mirror</a>.",
+    "errorTitle": "Oups :(",
+    "error": "Une erreur s'est produite. Veuillez recharger cette page s'il vous plaît.",
+    "errorTechData": "Données techniques à transmettre au support"
   },
   "editor": {
     "yourName": "Votre pseudonyme",
     "storyTitle": "Votre titre",
     "storyBody": "Écrire votre récit ici...",
     "storySummary": "Écrire votre message",
+    "featuredImage": "(optionnel) Choisir une image qui illustrera votre récit.",
+    "featuredImageHelp": "(Cette image sera affichée en bannière au ratio 4:1)",
     "summaryDescriptionText": "Quel est le principal message de votre récit ou de votre histoire ?",
     "submitStory": "Soumettre votre récit",
     "saveDraft": "Sauvegarder votre brouillon",

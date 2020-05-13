@@ -5,16 +5,17 @@ import { IntlProvider } from 'preact-i18n';
 import { BrightMirror } from './Components/BrightMirror';
 
 
-
-const IntlApp = ({ children, ...props }) => (
-  <IntlProvider definition={definition}>
+const IntlApp = ({ children, ...props }) => {
+  const runtimeConfig = { ...appConfig, ...props };
+  return (<IntlProvider definition={definition}>
     <BrightMirror
-      newPostEndpoint={appConfig.api.newPostEndpoint}
-      readPostEndpoint={appConfig.api.readPostEndpoint}
-      topic={appConfig.editorial.topic}
-      instructions={appConfig.editorial.instructions}
+      newPostEndpoint={runtimeConfig.api.newPostEndpoint}
+      readPostEndpoint={runtimeConfig.api.readPostEndpoint}
+      topic={runtimeConfig.editorial.topic}
+      instructions={runtimeConfig.editorial.instructions}
     />
   </IntlProvider>
-);
+  );
+};
 
 export default IntlApp;

@@ -7,7 +7,8 @@ export const config = {
   },
   editorial: {
     topic: 'Titre de thème du Bright Mirror en titre 2',
-    instructions: 'Description de la thématique, et précision de comment contribuer.'
+    instructions: 'Description de la thématique, et précision de comment contribuer.',
+    brightMirrorIndexPage: 'http://localhost:8001/bright-mirror/'
   }
     
 };

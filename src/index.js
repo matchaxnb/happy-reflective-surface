@@ -16,6 +16,7 @@ const IntlApp = ({ children, ...props }) => {
       readPostEndpoint={runtimeConfig.api.readPostEndpoint}
       topic={runtimeConfig.editorial.topic}
       instructions={runtimeConfig.editorial.instructions}
+      brightMirrorIndexPage={runtimeConfig.editorial.brightMirrorIndexPage}
     />
   </IntlProvider>
   );

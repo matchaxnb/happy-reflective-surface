@@ -235,7 +235,6 @@ BrightMirror.defaultProps = {
   targetStoryLength: 350,
   targetTitleLength: 8,
   targetAuthorNicknameLength: 4,
-  simulateDelay: 3000,
   showMirrorViewer: false,
   showStoryPicker: false,
   showAppStatus: false,

@@ -27,7 +27,8 @@
  */
 
 namespace BrightMirror;
-
+// some cache buster for later
+define("BRIGHTMIRROR_WEBAPP_VERSION", "ronron");
 
 /** Security code **/
 
@@ -278,8 +279,30 @@ function bmallowed_origin_form_content() {
         <?php
 }
 
+function bootstrap() {
+    add_shortcode('bright_mirror', '\BrightMirror\bright_mirror_shortcode');
+}
+
+function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
+    wp_enqueue_script('brightmirror-webapp-bundle');
+    wp_enqueue_style('brightmirror-webapp-style');
+    ?>
+    <div data-widget-host="habitat">
+        <script type="text/props">
+        <?php echo $content; ?>
+        </script>
+    </div>
+    <?php
+}
+
+function register_webapp_scripts() {
+    wp_register_script('brightmirror-webapp-bundle', plugin_dir_url(__FILE__)."webapp/bundle.js", array(), BRIGHTMIRROR_WEBAPP_VERSION);
+    wp_register_style('brightmirror-webapp-style', plugin_dir_url(__FILE__)."webapp/bundle.css", array(), BRIGHTMIRROR_WEBAPP_VERSION);
+}
 
 // declare stuff
+\add_action('init', '\BrightMirror\bootstrap');
+\add_action('init', '\BrightMirror\register_webapp_scripts');
 \add_action('init', '\BrightMirror\create_posttype');
 \add_action('admin_menu', '\BrightMirror\register_admin_menu');
 \add_action('admin_init', '\BrightMirror\register_settings');

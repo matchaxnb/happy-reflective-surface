@@ -42,12 +42,13 @@ export class BrightMirror extends Component {
       { story: { ...this.state.story, ...{ [fieldName]: e.target.innerHTML } } },
       () => { this.recomputePercentage(); });
   };
-  saveToServer = (asDraft) => {
+  saveToServer = async (asDraft) => {
     const jsonBody = JSON.stringify(this.state.story);
     let endpoint = this.newPostEndpoint;
     if (asDraft === true) {
       endpoint += '?as_draft=true';
     }
+    this.setState({ appStatus: LBM_STATUS_SUBMITTING });
     fetch(endpoint, {
       method: 'POST',
       headers: {

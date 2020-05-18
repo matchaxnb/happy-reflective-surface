@@ -4,22 +4,32 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "preact build --no-prerender",
+    "build": "preact build --no-prerender --clean --template src/index.ejs --no-service-worker",
     "serve": "sirv build --cors --single",
-    "dev": "preact watch",
+    "dev": "preact watch --template src/index.ejs",
     "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": "eslint-config-synacor",
     "rules": {
-      "indent": ["error", 2],
-      "max-len": ["warn", 130],
+      "indent": [
+        "error",
+        2
+      ],
+      "max-len": [
+        "warn",
+        130
+      ],
       "react/jsx-indent-props": "off"
     }
   },
   "eslintIgnore": [
     "build/*"
   ],
+  "alias": {
+    "react": "preact/compat",
+    "react-dom": "preact/compat"
+  },
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-config-synacor": "^3.0.4",
@@ -31,8 +41,11 @@
     "dompurify": "^2.0.10",
     "medium-editor": "^5.23.3",
     "preact": "^10.1.0",
+    "preact-habitat": "^3.3.0",
     "preact-i18n": "^2.0.0-preactx.2",
+    "preact-progress": "^1.0.0",
     "preact-render-to-string": "^5.1.2",
-    "reading-time": "^1.2.0"
+    "reading-time": "^1.2.0",
+    "styled-components": "^5.1.0"
   }
 }

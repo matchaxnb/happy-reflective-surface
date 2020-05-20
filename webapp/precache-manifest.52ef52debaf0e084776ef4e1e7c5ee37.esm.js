@@ -4,11 +4,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/wp-content/plugins/bright-mirror/webapp/assets/icon.png"
   },
   {
-    "revision": "bb24ea92173b640da110",
-    "url": "/wp-content/plugins/bright-mirror/webapp/bundle.2723c.esm.js"
+    "revision": "2a7de653f640c7a699f4",
+    "url": "/wp-content/plugins/bright-mirror/webapp/bundle.492c3.esm.js"
   },
   {
-    "revision": "bb24ea92173b640da110",
+    "revision": "2a7de653f640c7a699f4",
     "url": "/wp-content/plugins/bright-mirror/webapp/bundle.css"
   },
   {

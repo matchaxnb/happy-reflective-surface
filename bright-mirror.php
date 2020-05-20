@@ -28,9 +28,13 @@
 
 namespace BrightMirror;
 // some cache buster for later
-define("BRIGHTMIRROR_WEBAPP_VERSION", "ronron");
-define("BRIGHTMIRROR_DEFAULT_POST_STATUS", "draft");
+define("BRIGHTMIRROR_WEBAPP_VERSION", "meow");
+define("BRIGHTMIRROR_DEFAULT_POST_STATUS", "publish");
 
+// URL settings
+define("BRIGHTMIRROR_BMTAG_SLUG", "bm-tag");
+define("BRIGHTMIRROR_SEGMENT_SLUG", "bms");
+define("BRIGHTMIRROR_POST_HOLDING_IMAGES", 1299);
 /** Security code **/
 
 // CORSify this
@@ -133,11 +137,34 @@ function handle_create_bm_post($data) {
     ],
     true);
     $res_image = null;
-    if (isset($body['image'])) {
+    // ignore very small pixels
+    if (isset($body['image']) && strlen($body['image']) > 100) {
         $image = datauri_to_bytes($body['image']);
         $res_image = add_image_to_post($res, $image);
+    } else {
+      // pick a random image 
+      $availpics = get_children(
+	      [
+
+		      'posts_per_page' => 1,
+		      'orderby' => 'rand',
+		      'order' => 'ASC',
+		      'post_type' => 'attachment',
+		      'post_mime_type' => 'image',
+		      'post_parent' => BRIGHTMIRROR_POST_HOLDING_IMAGES,
+	     ]);
+	$pico = array_pop($availpics);
+        $pic = $pico->ID;
+      	set_post_thumbnail( $res, $pic );
+
     }
     $editUrl = \rest_url("brightmirror/v1/stories/${res}?extra_id=${randomid}");
+    // add segment taxonomy if present (and thus supported in the client)
+    // TODO: only accept existing segments here.
+    if (isset($body['segment'])) {
+        $s = $body['segment'];
+        wp_set_post_terms($res, array($s), 'bm_segment', false);
+    }
     return [
         'post_id' => $res,
         'extra_id' => \hash('sha256', $randomid),
@@ -222,13 +249,39 @@ function create_posttype() {
             'menu_name' => __( 'Tags' ),
             );
 
+    $labels_segments = array(
+            'name' => _x( 'Bright Mirror Segments', 'taxonomy general name' ),
+            'singular_name' => _x( 'Bright Mirror Segment', 'taxonomy singular name' ),
+            'search_items' =>  __( 'Search Segments' ),
+            'popular_items' => __( 'Popular Segments' ),
+            'all_items' => __( 'All Segments' ),
+            'parent_item' => null,
+            'parent_item_colon' => null,
+            'edit_item' => __( 'Edit Segment' ),
+            'update_item' => __( 'Update Segment' ),
+            'add_new_item' => __( 'Add New Segment' ),
+            'new_item_name' => __( 'New Segment Name' ),
+            'separate_items_with_commas' => __( 'Separate segment tags with commas' ),
+            'add_or_remove_items' => __( 'Add or remove segments' ),
+            'choose_from_most_used' => __( 'Choose from the most used segments' ),
+            'menu_name' => __( 'Segments' ),
+            );
+
     register_taxonomy('bm_tag','bright-mirror',array(
                 'hierarchical' => false,
                 'labels' => $labels,
                 'show_ui' => true,
                 'update_count_callback' => '_update_post_term_count',
                 'query_var' => true,
-                'rewrite' => array( 'slug' => 'bm-tag' ),
+                'rewrite' => array( 'slug' => BRIGHTMIRROR_BMTAG_SLUG ),
+                ));
+    register_taxonomy('bm_segment','bright-mirror',array(
+                'hierarchical' => false,
+                'labels' => $labels_segments,
+                'show_ui' => true,
+                'update_count_callback' => '_update_post_term_count',
+                'query_var' => true,
+                'rewrite' => array( 'slug' => BRIGHTMIRROR_SEGMENT_SLUG ),
                 ));
 
 }
@@ -318,14 +371,81 @@ function bootstrap() {
 function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
     wp_enqueue_script('brightmirror-webapp-bundle');
     wp_enqueue_style('brightmirror-webapp-style');
-    ?>
+    /* supported parameters: 
+        api.newPostEndpoint
+        api.readPostEndpoint
+        editorial.topic
+        editorial.instructions (or take $content otherwise)
+        editorial.brightMirrorIndexPage
+        postExtraData.segment
+        language
+     */
+    $shortcodeAtts = [
+        'apinewpostendpoint' => null,
+        'apireadpostendpoint' => null,
+        'editorialtopic' => null,
+        'editorialinstructions' => $content,
+        'postextradatasegment' => null,
+        'brightmirrorindexpage' => null,
+        'language' => 'fr-fr',
+
+    ];
+    $atts = shortcode_atts($shortcodeAtts, $atts);
+    $map = [
+        'apinewpostendpoint' => ['api', 'newPostEndpoint'],
+        'apireadpostendpoint' => ['api', 'readPostEndpoint'],
+        'editorialtopic' => ['editorial', 'topic'],
+        'brightmirrorindexpage' => ['editorial', 'brightMirrorIndexPage'],
+        'editorialinstructions' => ['editorial', 'instructions'],
+        'postextradatasegment' => ['postExtraData', 'segment'],
+        'language' => ['language'],
+    ];
+
+    $config = [
+        'api' => [
+            'newPostEndpoint' => '',
+            'readPostEndpoint' => 'please set api.readPostEndpoint',
+        ],
+        'editorial' => [
+            'topic' => 'please set editorial.topic',
+            'instructions' => $content
+        ],
+        'postExtraData' => [
+            'segment' => null,
+        ],
+        'language' => null,
+    ];
+    $warnNotSet = ['apinewpostendpoint', 'postextradatasegment', 'editorialtopic', 'brightmirrorindexpage'];
+    foreach ($warnNotSet as $i) {
+        if ($atts[$i] === null) {
+            $atts['editorialinstructions'] .= "\n-- BM: please set $i -- \n";
+        }
+    }
+
+    if ($atts['apireadpostendpoint'] === null && $atts['apinewpostendpoint'] !== null) {
+        $atts['apireadpostendpoint'] = $atts['apinewpostendpoint'] . '/';
+    }
+
+    foreach ($atts as $item => $v) {
+        if (count($map[$item]) == 2) {
+            list($a, $b) = $map[$item];
+            $config[$a][$b] = $v;
+        } elseif (count($map[$item]) == 1) {
+            $config[$item] = $v;
+        }
+    }
+    $jse = json_encode($config);
+    $toEcho = <<<EOT
         <div data-widget-host="habitat">
         <script type="text/props">
-        <?php echo $content; ?>
+        $jse
         </script>
         </div>
         <?php
+EOT;
+    return $toEcho;
 }
+
 
 function bm_no_texturize( $shortcodes ) {
     $shortcodes[] = 'bright_mirror';

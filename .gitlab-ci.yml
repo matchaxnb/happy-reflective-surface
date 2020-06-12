@@ -24,9 +24,9 @@ build:
 release:
   stage: release
   rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^release/'
+    - if: '$CI_COMMIT_BRANCH =~ /^release.*/'
       when: always
-    - if: '$CI_COMMIT_BRANCH =~ /^ci-/'
+    - if: '$CI_COMMIT_BRANCH =~ /^ci-.*/'
       when: always
     - if: '$CI_COMMIT_BRANCH =~ /^master/'
       when: always

@@ -17,3 +17,14 @@ build:
   artifacts:
     paths:
       - public # GitLab pages serve from a 'public' directory
+
+release:
+  stage: release
+  only: branches
+  script:
+  - mv public $CI_PROJECT_NAME.$CI_COMMIT_SHORT_SHA
+  release:
+    name: $CI_PROJECT_NAME release $CI_COMMIT_SHORT_SHA
+    assets:
+    - name: $CI_PROJECT_NAME.$CI_COMMIT_SHORT_SHA.zip
+      path: $CI_PROJECT_NAME.$CI_COMMIT_SHORT_SHA

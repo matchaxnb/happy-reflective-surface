@@ -23,12 +23,15 @@ build:
 
 release:
   stage: release
-  only:
-    - /^release/.*
-    - tags
-    - /^add-ci
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^release/'
+      when: always
+    - if: '$CI_COMMIT_BRANCH =~ /^ci-/'
+      when: always
+    - if: '$CI_COMMIT_BRANCH =~ /^master/'
+      when: always
   script:
-  - mv public $CI_PROJECT_NAME.$CI_COMMIT_SHORT_SHA
+  - mv public $CI_PROJECT_NAME.$CI_COMMIT_BRANCH.$CI_COMMIT_SHORT_SHA
   artifacts:
     paths:
-      - $CI_PROJECT_NAME.$CI_COMMIT_SHORT_SHA
+      - $CI_PROJECT_NAME.$CI_COMMIT_BRANCH.$CI_COMMIT_SHORT_SHA

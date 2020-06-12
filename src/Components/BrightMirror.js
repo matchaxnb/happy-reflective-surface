@@ -47,7 +47,8 @@ export class BrightMirror extends Component {
       () => { this.recomputePercentage(); });
   };
   saveToServer = async (asDraft) => {
-    const jsonBody = JSON.stringify(this.state.story);
+    const postBody = { ...this.state.story, ...this.props.postExtraData };
+    const jsonBody = JSON.stringify(postBody);
     let endpoint = this.newPostEndpoint;
     if (asDraft === true) {
       endpoint += '?as_draft=true';
@@ -188,10 +189,12 @@ export class BrightMirror extends Component {
         </BrightMirrorStyledContainer>
       );
     }
+    const cleanInstructions = DOMPurify.sanitize(this.props.instructions);
     return (<BrightMirrorStyledContainer className="bmApp">
       <h2 className="appTitle"><Text id="app.title">bright mirror app</Text></h2>
       <h3 className="brightMirrorTheme">{this.props.topic}</h3>
-      <p className="brightMirrorThemeDescription">{this.props.instructions}</p>
+      { /* eslint-disable-next-line react/no-danger */ }
+      <p className="brightMirrorThemeDescription" dangerouslySetInnerHTML={{ __html: cleanInstructions }} />
       <BrightMirrorEditor
         story={this.state.story}
         inputHandler={this.editorInputChangeHandler}
@@ -238,8 +241,8 @@ BrightMirror.defaultProps = {
   showMirrorViewer: false,
   showStoryPicker: false,
   showAppStatus: false,
-  topic: 'example bright mirror topic',
-  instructions: 'example bright mirror topic description',
+  topic: 'example <b>bright mirror</b> topic',
+  instructions: 'example <b>bright mirror</b> topic description',
   brightMirrorIndexPage: 'http://localhost:8001/bright-mirror/'
 };
 const BrightMirrorStyledContainer = styled.div`
@@ -252,6 +255,7 @@ width: 100%;
   font-weight: bold;
   color: black;
   font-size: 2em;
+  display: none;
 }
 h3.brightMirrorTheme {
   color: black;

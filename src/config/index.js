@@ -1,5 +1,4 @@
-// TODO: make this somewhat more modular (or provide something at runtime)
-
+// this is a default config that works for development.
 export const config = {
   api: {
     newPostEndpoint: 'http://localhost:8001/wp-json/brightmirror/v1/stories',
@@ -7,9 +6,12 @@ export const config = {
   },
   editorial: {
     topic: 'Titre de thème du Bright Mirror en titre 2',
-    instructions: 'Description de la thématique, et précision de comment contribuer.',
+    instructions: 'Description de la <b>thématique</b>, et précision de comment contribuer.',
     brightMirrorIndexPage: 'http://localhost:8001/bright-mirror/'
+  },
+  postExtraData: {
+    segment: 'histoires'
   }
-    
+//  language: 'tpl'
 };
 export default config;

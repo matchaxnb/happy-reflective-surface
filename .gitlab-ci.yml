@@ -1,5 +1,8 @@
 image: node:12.10.0 # change to match your node version
 
+stages:
+  - build
+  - release
 cache:
   paths:
     - node_modules/
@@ -20,7 +23,10 @@ build:
 
 release:
   stage: release
-  only: branches
+  only:
+    - /^release/.*
+    - tags
+    - /^add-ci
   script:
   - mv public $CI_PROJECT_NAME.$CI_COMMIT_SHORT_SHA
   release:

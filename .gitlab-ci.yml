@@ -23,12 +23,12 @@ Build:
     - yarn install 
     - yarn --dev
   script:
-    - grunt build
+    - yarn grunt build
 
 Generate Artifact:
     stage: dist
     script:
-      - grunt build
+      - yarn grunt build
       - mv dist bright-mirror
     artifacts:
       paths:

@@ -10,6 +10,7 @@ cache:
 before_script:
   - npm install -g yarn
   - yarn
+  - yarn --dev
 
 build:
   stage: build

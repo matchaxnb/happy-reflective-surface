@@ -2,8 +2,7 @@
 # image versions. This is useful because we're freely to use
 # multiple node versions to work with it. They come from the docker
 # repo.
-# Uses NodeJS V 9.4.0
-image: node:9.4.0
+image: node:12.20.1
 
 # And to cache them as well.
 cache:

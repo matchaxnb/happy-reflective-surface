@@ -7,7 +7,7 @@
  * Author URI:      https://gitlab.com/ChloeTigre
  * Text Domain:     bright-mirror
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         {{version}}
  *
  * @package         Bright_Mirror
  */

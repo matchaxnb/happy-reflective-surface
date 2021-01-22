@@ -3,6 +3,9 @@
 # multiple node versions to work with it. They come from the docker
 # repo.
 image: node:12.20.1
+variables:
+    WEBAPP_PACKAGE: https://gitlab.com/assembl/light-bright-mirror/-/package_files/6322761/download
+    PLUGIN_PACKAGE_TAG: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/$CI_COMMIT_TAG/wp-bright-mirror.zip
 
 # And to cache them as well.
 cache:
@@ -27,9 +30,14 @@ Build:
 
 Generate Artifact:
     stage: dist
-    script:
-      - yarn grunt build
-      - mv dist bright-mirror
+    before_script:
+      - apt update; apt -y -qq install zip
+    script: |
+      yarn grunt build;
+      mv dist bright-mirror;
+      cd bright-mirror; curl -o ../bm.zip $WEBAPP_PACKAGE; unzip ../bm.zip; cd ..;
+      zip -r bright-mirror bright-mirror
+      if [ ! -z "$CI_COMMIT_TAG" ]; then curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./bright-mirror.zip $PLUGIN_PACKAGE_TAG; fi
     artifacts:
       paths:
         - bright-mirror

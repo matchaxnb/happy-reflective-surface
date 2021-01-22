@@ -25,6 +25,7 @@ Build:
     - yarn config set cache-folder .yarn
     - yarn install 
     - yarn --dev
+    - apt update; apt -yqq install php-cli
   script:
     - yarn grunt build
 

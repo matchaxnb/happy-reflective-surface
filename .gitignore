@@ -7,3 +7,6 @@ node_modules/
 *.sql
 *.tar.gz
 *.zip
+/dist/
+/bright-mirror/
+yarn.lock

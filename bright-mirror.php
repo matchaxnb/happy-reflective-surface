@@ -232,39 +232,39 @@ function create_posttype() {
                 )
             );
     $labels = array(
-            'name' => _x( 'Bright Mirror Tags', 'taxonomy general name' ),
-            'singular_name' => _x( 'Bright Mirror Tag', 'taxonomy singular name' ),
-            'search_items' =>  __( 'Search Tags' ),
-            'popular_items' => __( 'Popular Tags' ),
-            'all_items' => __( 'All Tags' ),
+            'name' => _x( 'Bright Mirror Tags', 'taxonomy general name', 'bright-mirror' ),
+            'singular_name' => _x( 'Bright Mirror Tag', 'taxonomy singular name', 'bright-mirror' ),
+            'search_items' =>  __( 'Search Tags', 'bright-mirror' ),
+            'popular_items' => __( 'Popular Tags', 'bright-mirror' ),
+            'all_items' => __( 'All Tags', 'bright-mirror' ),
             'parent_item' => null,
             'parent_item_colon' => null,
-            'edit_item' => __( 'Edit Tag' ),
-            'update_item' => __( 'Update Tag' ),
-            'add_new_item' => __( 'Add New Tag' ),
-            'new_item_name' => __( 'New Tag Name' ),
-            'separate_items_with_commas' => __( 'Separate tags with commas' ),
-            'add_or_remove_items' => __( 'Add or remove tags' ),
-            'choose_from_most_used' => __( 'Choose from the most used tags' ),
-            'menu_name' => __( 'Tags' ),
+            'edit_item' => __( 'Edit Tag', 'bright-mirror' ),
+            'update_item' => __( 'Update Tag', 'bright-mirror' ),
+            'add_new_item' => __( 'Add New Tag', 'bright-mirror' ),
+            'new_item_name' => __( 'New Tag Name', 'bright-mirror' ),
+            'separate_items_with_commas' => __( 'Separate tags with commas', 'bright-mirror' ),
+            'add_or_remove_items' => __( 'Add or remove tags', 'bright-mirror' ),
+            'choose_from_most_used' => __( 'Choose from the most used tags', 'bright-mirror' ),
+            'menu_name' => __( 'Tags', 'bright-mirror' ),
             );
 
     $labels_segments = array(
-            'name' => _x( 'Bright Mirror Segments', 'taxonomy general name' ),
-            'singular_name' => _x( 'Bright Mirror Segment', 'taxonomy singular name' ),
-            'search_items' =>  __( 'Search Segments' ),
-            'popular_items' => __( 'Popular Segments' ),
-            'all_items' => __( 'All Segments' ),
+            'name' => _x( 'Bright Mirror Segments', 'taxonomy general name', 'bright-mirror' ),
+            'singular_name' => _x( 'Bright Mirror Segment', 'taxonomy singular name', 'bright-mirror' ),
+            'search_items' =>  __( 'Search Segments', 'bright-mirror' ),
+            'popular_items' => __( 'Popular Segments', 'bright-mirror' ),
+            'all_items' => __( 'All Segments', 'bright-mirror' ),
             'parent_item' => null,
             'parent_item_colon' => null,
-            'edit_item' => __( 'Edit Segment' ),
-            'update_item' => __( 'Update Segment' ),
-            'add_new_item' => __( 'Add New Segment' ),
-            'new_item_name' => __( 'New Segment Name' ),
-            'separate_items_with_commas' => __( 'Separate segment tags with commas' ),
-            'add_or_remove_items' => __( 'Add or remove segments' ),
-            'choose_from_most_used' => __( 'Choose from the most used segments' ),
-            'menu_name' => __( 'Segments' ),
+            'edit_item' => __( 'Edit Segment', 'bright-mirror' ),
+            'update_item' => __( 'Update Segment', 'bright-mirror' ),
+            'add_new_item' => __( 'Add New Segment', 'bright-mirror' ),
+            'new_item_name' => __( 'New Segment Name', 'bright-mirror' ),
+            'separate_items_with_commas' => __( 'Separate segment tags with commas', 'bright-mirror' ),
+            'add_or_remove_items' => __( 'Add or remove segments', 'bright-mirror' ),
+            'choose_from_most_used' => __( 'Choose from the most used segments', 'bright-mirror' ),
+            'menu_name' => __( 'Segments', 'bright-mirror' ),
             );
 
     register_taxonomy('bm_tag','bright-mirror',array(
@@ -371,7 +371,7 @@ function bootstrap() {
 function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
     wp_enqueue_script('brightmirror-webapp-bundle');
     wp_enqueue_style('brightmirror-webapp-style');
-    /* supported parameters: 
+    /* supported parameters:
         api.newPostEndpoint
         api.readPostEndpoint
         editorial.topic
@@ -388,6 +388,7 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         'postextradatasegment' => null,
         'brightmirrorindexpage' => null,
         'language' => 'fr-fr',
+        'defaultauthor' => '',
 
     ];
     $atts = shortcode_atts($shortcodeAtts, $atts);
@@ -399,6 +400,7 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         'editorialinstructions' => ['editorial', 'instructions'],
         'postextradatasegment' => ['postExtraData', 'segment'],
         'language' => ['language'],
+        'defaultauthor' => ['defaultAuthor'],
     ];
 
     $config = [
@@ -414,6 +416,7 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
             'segment' => null,
         ],
         'language' => null,
+        'defaultAuthor' => null,
     ];
     $warnNotSet = ['apinewpostendpoint', 'postextradatasegment', 'editorialtopic', 'brightmirrorindexpage'];
     foreach ($warnNotSet as $i) {
@@ -425,7 +428,11 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
     if ($atts['apireadpostendpoint'] === null && $atts['apinewpostendpoint'] !== null) {
         $atts['apireadpostendpoint'] = $atts['apinewpostendpoint'] . '/';
     }
-
+    // fill default author if user is logged in
+    if (if_user_logged_in() && empty($atts['defaultauthor'])) {
+        $atts['defaultauthor'] = wp_get_current_user()->user_login;
+    }
+    // shitty way to fill the config but heh make it better
     foreach ($atts as $item => $v) {
         if (count($map[$item]) == 2) {
             list($a, $b) = $map[$item];

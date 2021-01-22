@@ -2,7 +2,7 @@
 	get_header(); 
 
 	$term = get_queried_object();
-	echo ebor_page_title( esc_html__('Bright Mirror entries In: ', 'morello' ) . $term->name );	
+	echo ebor_page_title( esc_html__('Bright Mirror entries In: ', 'bright-mirror' ) . $term->name );	
 
 	get_template_part( 'inc/content-wrapper', 'open' );
     ?>

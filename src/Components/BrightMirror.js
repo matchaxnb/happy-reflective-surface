@@ -125,10 +125,10 @@ export class BrightMirror extends Component {
     this.readPostEndpoint = props.readPostEndpoint;
     this.state = {
       story: {
-        author: '',
-        title: '',
-        body: '',
-        summary: '',
+        author: this.props.defaultAuthor || '',
+        title: this.props.defaultTitle || '',
+        body: this.props.defaultBody || '',
+        summary: this.props.defaultSummary || '',
         image: null
       },
       editionLink: '#',

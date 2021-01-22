@@ -10,3 +10,4 @@ node_modules/
 /dist/
 /bright-mirror/
 yarn.lock
+/webapp/

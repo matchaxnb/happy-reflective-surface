@@ -19,8 +19,6 @@ stages:
 
 Build:
   stage: build
-  tags:
-    - node
   before_script: 
     - yarn config set cache-folder .yarn
     - yarn install 
@@ -30,8 +28,6 @@ Build:
 
 Generate Artifact:
     stage: dist
-    tags:
-      - node
     script:
       - grunt build
       - mv dist bright-mirror

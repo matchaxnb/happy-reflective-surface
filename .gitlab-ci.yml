@@ -32,7 +32,6 @@ Generate Artifact:
     stage: dist
     tags:
       - node
-    before_script: apt update && apt -y -qq install zip
     script:
       - grunt build
       - mv dist bright-mirror

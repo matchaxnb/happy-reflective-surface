@@ -1,5 +1,8 @@
 image: node:12.10.0 # change to match your node version
 
+variables:
+  PACKAGE: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/$CI_BUILD_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  PACKAGE_TAG: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/$CI_COMMIT_TAG
 stages:
   - build
   - release
@@ -33,8 +36,13 @@ release:
       when: always
     - if: '$CI_COMMIT_BRANCH =~ /^master/'
       when: always
+  before_script:
+    - apt update; apt -qq -y install zip
   script:
-  - mv public $CI_PROJECT_NAME.$CI_COMMIT_BRANCH.$CI_COMMIT_SHORT_SHA
+  - mv public webapp
+  - zip -r webapp webapp
+  - curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./webapp.zip $PACKAGE
+  - if [ ! -z "$CI_COMMIT_TAG" ]; then curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./webapp.zip $PACKAGE_TAG; fi
   artifacts:
     paths:
-      - $CI_PROJECT_NAME.$CI_COMMIT_BRANCH.$CI_COMMIT_SHORT_SHA
+      - webapp

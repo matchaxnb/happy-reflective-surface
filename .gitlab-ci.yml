@@ -1,7 +1,7 @@
 image: node:12.10.0 # change to match your node version
 
 variables:
-  PACKAGE: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/$CI_BUILD_REF_SLUG-$CI_COMMIT_SHORT_SHA/webapp.zip
+  PACKAGE: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/0.0.$CI_JOB_ID/webapp.zip
   PACKAGE_TAG: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/$CI_COMMIT_TAG/webapp.zip
 stages:
   - build

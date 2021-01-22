@@ -36,5 +36,5 @@ Generate Artifact:
       - grunt build
       - mv dist bright-mirror
     artifacts:
-      path:
+      paths:
         - bright-mirror

@@ -1,0 +1,41 @@
+# GitLab uses docker in the background, so we need to specify the 
+# image versions. This is useful because we're freely to use
+# multiple node versions to work with it. They come from the docker
+# repo.
+# Uses NodeJS V 9.4.0
+image: node:9.4.0
+
+# And to cache them as well.
+cache:
+  paths:
+    - node_modules/
+    - .yarn
+
+# You specify the stages. Those are the steps that GitLab will go through
+# Order matters.
+stages:
+  - build
+  - dist
+
+Build:
+  stage: build
+  tags:
+    - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+    - yarn install 
+    - yarn --dev
+  script:
+    - grunt build
+
+Generate Artifact:
+    stage: dist
+    tags:
+      - node
+    before_script: apt update && apt -y -qq install zip
+    script:
+      - grunt build
+      - mv dist bright-mirror
+    artifacts:
+      path:
+        - bright-mirror

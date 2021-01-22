@@ -38,11 +38,11 @@ release:
       when: always
   before_script:
     - apt update; apt -qq -y install zip
-  script:
-  - mv public webapp
-  - zip -r webapp webapp
-  - curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./webapp.zip $PACKAGE
-  - if [ ! -z "$CI_COMMIT_TAG" ]; then curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./webapp.zip $PACKAGE_TAG; fi
+  script: |
+    mv public webapp;
+    zip -r webapp webapp;
+    curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./webapp.zip "$PACKAGE";
+    if [ ! -z "$CI_COMMIT_TAG" ]; then curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./webapp.zip $PACKAGE_TAG; fi
   artifacts:
     paths:
       - webapp

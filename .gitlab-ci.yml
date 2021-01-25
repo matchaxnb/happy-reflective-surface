@@ -5,6 +5,7 @@
 image: node:12.20.1
 variables:
     WEBAPP_PACKAGE: https://gitlab.com/assembl/light-bright-mirror/-/package_files/6322761/download
+    WEBAPP_PACKAGE_TAG: ${CI_API_V4_URL}/projects/light-bright-mirror/packages/generic/bright-mirror/$CI_COMMIT_TAG/webapp.zip
     PLUGIN_PACKAGE_TAG: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/bright-mirror/$CI_COMMIT_TAG/wp-bright-mirror.zip
 
 # And to cache them as well.
@@ -36,7 +37,11 @@ Generate Artifact:
     script: |
       yarn grunt build;
       mv dist bright-mirror;
-      cd bright-mirror; curl -o ../bm.zip $WEBAPP_PACKAGE; unzip ../bm.zip; cd ..;
+      if [ ! -z "$CI_COMMIT_TAG" ]; then
+      cd bright-mirror; curl -o ../bm.zip $WEBAPP_PACKAGE_TAG; unzip ../bm.zip; cd ..;
+      else
+      cd bright-mirror; curl -o ../bm.zip $WEBAPP_PACKAGE; unzip ../bm.zip; cd ..
+      fi
       zip -r bright-mirror bright-mirror
       if [ ! -z "$CI_COMMIT_TAG" ]; then curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./bright-mirror.zip $PLUGIN_PACKAGE_TAG; fi
     artifacts:

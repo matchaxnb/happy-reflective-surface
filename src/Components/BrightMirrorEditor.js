@@ -23,6 +23,10 @@ export class BrightMirrorEditor extends Component {
     const saveDraftText = this.props.saveDraftText;
     const copyToClipboardText = this.props.copyToClipboardText;
     const storySummaryPlaceholder = this.props.storySummaryPlaceholder;
+    const disabled = this.props.disabled || false;
+    if (disabled) {
+      return (<></>);
+    }
     return (<BrightMirrorEditorStyledContainer onSubmit={this.handleSubmit}>
       <ProgressBar percentage={this.props.percentage} />
       <section class="bmEditorMainSection">

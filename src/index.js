@@ -18,6 +18,8 @@ const IntlApp = ({ children, ...props }) => {
       topic={runtimeConfig.editorial.topic}
       instructions={runtimeConfig.editorial.instructions}
       brightMirrorIndexPage={runtimeConfig.editorial.brightMirrorIndexPage}
+      defaultAuthor={runtimeConfig.defaultAuthor || null}
+      hideEditor={runtimeConfig.hideEditor || false}
     />
   </IntlProvider>
   );

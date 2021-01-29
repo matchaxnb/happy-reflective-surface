@@ -205,6 +205,7 @@ export class BrightMirror extends Component {
         saveDraftHandler={this.saveDraftHandler}
         editionLink={this.state.editionLink}
         percentage={this.state.progressPercentage}
+        disabled={this.props.hideEditor}
       />
       
       {

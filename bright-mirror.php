@@ -366,9 +366,30 @@ function bootstrap() {
     add_filter('the_content', 'wpautop', 12);
     add_filter( 'no_texturize_shortcodes', '\BrightMirror\bm_no_texturize' );
     add_shortcode('bright_mirror', '\BrightMirror\bright_mirror_shortcode');
+    add_shortcode('bm_topic', '\BrightMirror\bright_mirror_shortcode');
+    add_shortcode('bm_instructions', '\BrightMirror\bright_mirror_shortcode');
+    add_shortcode('bm_loginform', '\BrightMirror\bright_mirror_shortcode');
 }
 
+$_bright_mirror_data = [
+    'topic' => "Please set topic in shortcode bm_topic",
+    'instructions' => "Please set instructions in shortcode bm_instructions",
+    'login_form' => "Please set login form contents in shortcode bm_loginform",
+];
+
+
 function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
+    global $_bright_mirror_data;
+    if ($shortcode_tag == 'bm_topic') {
+        $_bright_mirror_data['topic'] = do_shortcode($content);
+        return;
+    } elseif ($shortcode_tag == 'bm_instructions') {
+        $_bright_mirror_data['instructions'] = do_shortcode($content);
+        return;
+    } elseif ($shortcode_tag == 'bm_loginform') {
+        $_bright_mirror_data['login_form'] = do_shortcode($content);
+        return;
+    }
     wp_enqueue_script('brightmirror-webapp-bundle');
     wp_enqueue_style('brightmirror-webapp-style');
     /* supported parameters:
@@ -379,17 +400,20 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         editorial.brightMirrorIndexPage
         postExtraData.segment
         language
+        defaultAuthor
+        hideEditor (through anonymous)
      */
     $shortcodeAtts = [
         'apinewpostendpoint' => null,
         'apireadpostendpoint' => null,
-        'editorialtopic' => null,
-        'editorialinstructions' => $content,
+        'editorialtopic' => $_bright_mirror_data['topic'],
+        'editorialinstructions' => $_bright_mirror_data['instructions'],
         'postextradatasegment' => null,
         'brightmirrorindexpage' => null,
         'language' => 'fr-fr',
         'defaultauthor' => '',
-
+        'anonymous' => 'yes',
+        'anonymousloginform' => $_bright_mirror_data['login_form'],
     ];
     $atts = shortcode_atts($shortcodeAtts, $atts);
     $map = [
@@ -410,7 +434,7 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         ],
         'editorial' => [
             'topic' => 'please set editorial.topic',
-            'instructions' => $content
+            'instructions' => do_shortcode($content)
         ],
         'postExtraData' => [
             'segment' => null,
@@ -429,7 +453,7 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         $atts['apireadpostendpoint'] = $atts['apinewpostendpoint'] . '/';
     }
     // fill default author if user is logged in
-    if (if_user_logged_in() && empty($atts['defaultauthor'])) {
+    if (\is_user_logged_in() && empty($atts['defaultauthor'])) {
         $atts['defaultauthor'] = wp_get_current_user()->user_login;
     }
     // shitty way to fill the config but heh make it better
@@ -438,9 +462,12 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
             list($a, $b) = $map[$item];
             $config[$a][$b] = $v;
         } elseif (count($map[$item]) == 1) {
-            $config[$item] = $v;
+            list($a) = $map[$item];
+            $config[$a] = $v;
         }
     }
+    $anonymous = (!is_user_logged_in() && $atts['anonymous'] !== 'yes');
+    $config['hideEditor'] = $anonymous;
     $jse = json_encode($config);
     $toEcho = <<<EOT
         <div data-widget-host="habitat">
@@ -450,6 +477,9 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         </div>
         <?php
 EOT;
+    if ($anonymous) {
+        $toEcho .= do_shortcode($atts['anonymousloginform']);
+    }
     return $toEcho;
 }
 

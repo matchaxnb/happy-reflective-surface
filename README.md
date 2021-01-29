@@ -117,3 +117,18 @@ Markdown uses email style notation for blockquotes and I've been told:
 > Asterisks for *emphasis*. Double it up  for **strong**.
 
 `<?php code(); // goes in backticks ?>`
+
+
+# Example bm config
+
+```
+[bm_instructions]<em>A quoi pourrait ressembler le monde de demain  ? </em>
+
+Projetons-nous en 2030. Les changements économiques et culturels nécessaires pour préserver la planète ont eu un impact sur les métiers, sur les emplois, sur les territoires, etc.. Quels nouveaux métiers sont apparus ? Que sont devenues les personnes qui exerçaient des activités professionnelles ayant disparu ? Et vous, pour contribuer à la protection de l’environnement, quels choix de vie avez-vous fait (déménager, utiliser des mobilités douces (vélo, etc.), travailler moins…) ? 
+
+Nous vous proposons, pour cette thématique, de faire parler votre imagination. Vous pouvez partager votre récit, votre fiction en quelques mots (ou davantage !), ajouter des images, des vidéos, des dessins… Laissez votre créativité s’exprimer librement !
+[/bm_instructions][bm_topic]Demain, le monde idéal[/bm_topic]
+[bm_loginform]<p>Pour contribuer, identifiez-vous ou créez-vous un compte en cliquant sur ce bouton
+[openid_connect_generic_login_button][/openid_connect_generic_login_button]</p>
+[/bm_loginform][bright_mirror anonymous="no" apinewpostendpoint="/wp-json/brightmirror/v1/stories" apireadpostendpoint="/wp-json/brightmirror/v1/stories/" postextradatasegment="recits" brightmirrorindexpage="/bms/recits/"][/bright_mirror]
+```

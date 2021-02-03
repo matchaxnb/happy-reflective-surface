@@ -475,7 +475,6 @@ function bright_mirror_shortcode($atts, $content, $shortcode_tag) {
         $jse
         </script>
         </div>
-        <?php
 EOT;
     if ($anonymous) {
         $toEcho .= do_shortcode($atts['anonymousloginform']);

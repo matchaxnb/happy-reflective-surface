@@ -1,0 +1,33 @@
+{
+  "app": {
+    "title": "",
+    "readExisting": "Choisir un récit",
+    "footer": "",
+    "storySubmittedTitle": "Votre récit a été enregistré",
+    "storySubmittedBody": "Il sera très prochainement disponible sur <a href=\"{{site}}\">ce portail Notre Nouvelle Vie</a>.",
+    "errorTitle": "Oups :(",
+    "error": "Une erreur s'est produite. Veuillez recharger cette page s'il vous plaît.",
+    "errorTechData": "Données techniques à transmettre au support"
+  },
+  "editor": {
+    "yourName": "Votre pseudonyme",
+    "storyTitle": "Le titre de votre histoire",
+    "storyBody": "Écrire votre récit ici...",
+    "storySummary": "Écrire votre message...",
+    "featuredImage": "Ajouter une image",
+    "featuredImageHelp": "Télécharger une image mise en avant",
+    "summaryDescriptionText": "Quel est le principal message de votre histoire ou de votre témoignage ?",
+    "submitStory": "Publier",
+    "saveDraft": "Sauvegarder votre brouillon",
+    "copyToClipboard": "Sauvegarder le lien d'édition"
+  },
+  "reader": {
+    "textBy": "par ",
+    "readingTime": "{{duration}} min. de lecture"
+  },
+  "imageUploader": {
+   "resetCrop": "Redémarrer le recadrage",
+   "crop": "Recadrer l’image"
+   }
+ }
+ 

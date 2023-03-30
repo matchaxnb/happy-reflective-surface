@@ -1,0 +1,32 @@
+{
+  "app": {
+    "title": "app.title",
+    "readExisting": "app.readExisting",
+    "footer": "app.footer",
+    "storySubmittedTitle": "app.storySubmittedTitle",
+    "storySubmittedBody": "[HTML] app.storySubmittedBody",
+    "errorTitle": "app.errorTitle",
+    "error": "app.error",
+    "errorTechData": "app.errorTechData"
+  },
+  "editor": {
+    "yourName": "editor.yourName",
+    "storyTitle": "editor.storyTitle",
+    "storyBody": "editor.storyBody",
+    "storySummary": "editor.storySummary",
+    "featuredImage": "editor.featuredImage",
+    "featuredImageHelp": "editor.featuredImageHelp",
+    "summaryDescriptionText": "editor.summaryDescriptionText",
+    "submitStory": "editor.submitStory",
+    "saveDraft": "editor.saveDraft",
+    "copyToClipboard": "editor.copyToClipboard"
+  },
+  "reader": {
+    "textBy": "reader.textBy",
+    "readingTime": "[TEMPLATE] {{duration}} reader.readingTime"
+  },
+  "imageUploader": {
+   "resetCrop": "imageUploader.resetCrop",
+   "crop": "imageUploader.crop"
+   }
+ }

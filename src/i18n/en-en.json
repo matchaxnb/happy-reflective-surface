@@ -1,0 +1,24 @@
+{
+ "app": {
+   "title": "Bright Mirror by bluenove",
+   "readExisting": "Read a story",
+   "footer": "Bright Mirror by bluenove"
+ },
+ "editor": {
+   "yourName": "Your nickname",
+   "storyTitle": "Story title",
+   "storyBody": "Your story goes here",
+   "storySummary": "Your summary goes here",
+   "submitStory": "Submit your story",
+   "saveDraft": "Save draft",
+   "copyToClipboard": "Copy edit link"
+ },
+ "reader": {
+   "textBy": "A story by",
+   "readingTime": "Reading time: {{duration}} min."
+ },
+ "imageUploader": {
+  "resetCrop": "Reset",
+  "crop": "Crop picture"
+  }
+}
